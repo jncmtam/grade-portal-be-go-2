@@ -51,7 +51,7 @@
   | 6   |     | Thêm `Student` vào `Class` | `addStudent_to_Class` |
   | 7   |     | Thêm `Grade`               | `createGrade`         |
 
-  **Sau khi hoàn thành chức năng `POST` của `Admin` sẽ tiếp tục thực hiện các chức năng còn lại (PUT, GET, DELETE), sau đó sẽ đến `Student`, `Teacher`.**
+  **Sau khi hoàn thành chức năng `POST` của `Admin` sẽ tiếp tục thực hiện các chức năng còn lại (PUT, GET, DELETE) của `Admin`, `Student`, `Teacher`.**
 
 ---
 
