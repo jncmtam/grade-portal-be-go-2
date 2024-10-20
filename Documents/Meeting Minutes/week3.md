@@ -41,7 +41,7 @@
   - `Authentication`
   - `Validate`
 
-  | STT | Tên | Công việc                  | Hàm tương tứng        |
+  | STT | Tên | Tính năng                  | Hàm tương tứng        |
   | --- | --- | -------------------------- | --------------------- |
   | 1   |     | Thêm `Teacher`             | `createTeacher`       |
   | 2   |     | Thêm `Student`             | `createStudent`       |
