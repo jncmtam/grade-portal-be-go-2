@@ -9,6 +9,14 @@
 - Tạo 1 trang `.html `đơn giản để kiểm thử chức năng.
 - `Thứ 3 (21/10)` sẽ có hàm mẫu để mọi người implement code.
 - `Tối thứ 3 (21/10)` - `9h` : họp.
+  - OAuth2, JWT, APIs.
+  - `.csv` input file format
+  - Database (NoSQL), ERD.
+  - Source code :
+    - Config.
+    - Prototype.
+    - Instruction.
+  - Interact with FE.
 
 # NỘI DUNG
 
