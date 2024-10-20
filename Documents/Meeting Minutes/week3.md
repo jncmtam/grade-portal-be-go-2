@@ -15,12 +15,12 @@
 
 # CÔNG VIỆC
 
-- Hoàn Thiện Documents: `Deadline : 25/10/2024`
+- Hoàn Thiện Documents: `Deadline : 24/10/2024`
   - ERD.
   - Database.
   - Diagram _(Usecase, Sequence)_.
   - RESTfuls API _(POST, GET, DELETE, PUT)_.
-- Hoàn thiện chức năng Admin (_POST_): `Deadline : 27/10/2024`.
+- Hoàn thiện chức năng Admin (_POST_): `Deadline : 25/10/2024`.
 
 | STT | Tên                 | MSSV    | Công việc          |
 | --- | ------------------- | ------- | ------------------ |
