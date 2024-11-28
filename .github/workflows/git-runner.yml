@@ -31,9 +31,11 @@ jobs:
         run: go mod tidy
 
       - name: Check code format
+        working-directory: ./src
         run: go fmt ./...
 
       - name: Run tests
+        working-directory: ./src
         run: go test ./... -v
 
       - name: Notify Build Completion
