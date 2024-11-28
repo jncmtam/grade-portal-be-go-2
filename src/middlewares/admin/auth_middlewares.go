@@ -1,7 +1,8 @@
 package middlewares_admin
 
 import (
-	// "Go2/helper"
+	"Go2/helper"
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -28,6 +29,16 @@ func HandleRequireAuth(c *gin.Context) {
         c.Abort()
         return
     }
-
+    Claims, _ := helper.ParseJWT(token)
+	if Claims == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"code":    "error",
+			"massage": "Người dùng chưa đăng nhập",
+		})
+		c.Abort()
+		return
+	}
+	c.Set("ID", Claims.ID)
+	c.Next()
 
 }
