@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -18,17 +19,9 @@ func HandleCreateCourse(c *gin.Context) {
 
 	// Kiểm tra parse data vào có lỗi không
 	if err := c.BindJSON(&courseData); err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "Dữ liệu không hợp lệ",
-		})
-		return
-	}
-
-	if courseData.BT+courseData.TN+courseData.BTL+courseData.GK+courseData.CK != 100 {
-		c.JSON(400, gin.H{
-			"code":    "error",
-			"message": "Sai hệ số, tổng hệ số tối đa là 100",
 		})
 		return
 	}
@@ -38,7 +31,7 @@ func HandleCreateCourse(c *gin.Context) {
 	// Kiểm tra xem khóa học có bị trùng không
 	isDuplicate, err := CheckDuplicateCourse(collection, courseData.Ms, courseData.Name)
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"code":    "error",
 			"message": "Lỗi khi kiểm tra dữ liệu",
 		})
@@ -47,9 +40,17 @@ func HandleCreateCourse(c *gin.Context) {
 
 	// Nếu khóa học đã tồn tại, trả về lỗi
 	if isDuplicate {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "Khóa học đã tồn tại",
+		})
+		return
+	}
+
+	if courseData.BT+courseData.TN+courseData.BTL+courseData.GK+courseData.CK != 100 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":    "error",
+			"message": "Sai hệ số, tổng hệ số tối đa là 100",
 		})
 		return
 	}
@@ -66,7 +67,7 @@ func HandleCreateCourse(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(500, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"code":    "error",
 			"message": "Lỗi khi tạo khóa học",
 		})
@@ -74,7 +75,7 @@ func HandleCreateCourse(c *gin.Context) {
 	}
 
 	// Trả về kết quả thành công
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code":    "success",
 		"message": "Tạo khóa học thành công",
 	})
@@ -85,13 +86,12 @@ func CheckDuplicateCourse(collection *mongo.Collection, ms string, name string) 
 	if ms == "" {
 		return true, errors.New("lỗi ms không có")
 	}
-	filter := bson.M{
-		"ms": ms,
-	}
 
 	// Kiểm tra xem có bản ghi nào không
 	var result bson.M
-	err := collection.FindOne(context.TODO(), filter).Decode(&result)
+	err := collection.FindOne(context.TODO(), bson.M{
+		"ms": ms,
+	}).Decode(&result)
 	if err == mongo.ErrNoDocuments {
 		return false, nil // Không tìm thấy bản ghi
 	} else if err != nil {
@@ -106,7 +106,7 @@ func HandleGetCourseByID(c *gin.Context) {
 	param := c.Param("id")
 	courseID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "ID không hợp lệ",
 		})
@@ -118,20 +118,20 @@ func HandleGetCourseByID(c *gin.Context) {
 
 	if err := collection.FindOne(context.TODO(), bson.M{"_id": courseID}).Decode(&course); err != nil {
 		if err == mongo.ErrNoDocuments {
-			c.JSON(404, gin.H{
-				"status":  "error",
+			c.JSON(http.StatusNotFound, gin.H{
+				"code":  "error",
 				"message": "Không tìm thấy môn học",
 			})
 			return
 		}
-		c.JSON(500, gin.H{
-			"status":  "error",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  "error",
 			"message": "Lỗi khi lấy môn học",
 		})
 		return
 	}
-	c.JSON(200, gin.H{
-		"status":  "success",
+	c.JSON(http.StatusOK, gin.H{
+		"code":  "success",
 		"message": "Lấy môn học thành công",
 		"course":  course,
 	})
@@ -143,7 +143,7 @@ func HandleGetAllCourses(c *gin.Context) {
 	collection := models.CourseModel()
 	cursor, err := collection.Find(context.TODO(), bson.M{})
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "Lỗi khi lấy dữ liệu",
 		})
@@ -151,14 +151,14 @@ func HandleGetAllCourses(c *gin.Context) {
 	}
 	defer cursor.Close(context.TODO())
 	if err := cursor.All(context.TODO(), &allCourses); err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "Lỗi khi đọc dữ liệu từ cursor",
 		})
 		return
 	}
 	semester := helper.SetSemester()
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code":       "success",
 		"message":    "Lấy ra tất cả khóa học thành công",
 		"allCourses": allCourses,
@@ -171,7 +171,7 @@ func HandleDeleteCourse(c *gin.Context) {
 	param := c.Param("id")
 	courseID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "ID không hợp lệ",
 		})
@@ -179,13 +179,13 @@ func HandleDeleteCourse(c *gin.Context) {
 	}
 	collection := models.CourseModel()
 	if _, err = collection.DeleteOne(context.TODO(), bson.M{"_id": courseID}); err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "Lỗi khi xóa khóa học",
 		})
 		return
 	}
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code":    "success",
 		"message": "Xóa khóa học thành công",
 	})
@@ -196,7 +196,7 @@ func HandleUpdateCourse(c *gin.Context) {
 	param := c.Param("id")
 	courseID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "ID không hợp lệ",
 		})
@@ -210,7 +210,7 @@ func HandleUpdateCourse(c *gin.Context) {
 		UpdatedBy any    `json:"updatedBy" bson:"updatedBy"`
 	}
 	if err = c.BindJSON(&courseData); err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "Dữ liệu không hợp lệ",
 		})
@@ -221,13 +221,13 @@ func HandleUpdateCourse(c *gin.Context) {
 	courseData.UpdatedBy = adminID
 	fmt.Print(courseData)
 	if _, err = collection.UpdateOne(context.TODO(), bson.M{"_id": courseID}, bson.M{"$set": courseData}); err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "Lỗi khi cập nhật khóa học",
 		})
 		return
 	}
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code":    "success",
 		"message": "Cập nhật khóa học thành công",
 	})
