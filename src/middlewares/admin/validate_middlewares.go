@@ -23,8 +23,8 @@ func ValidateDataAdmin(c *gin.Context) {
 	c.BindJSON(&data)
 	if !ValidateEmail(data.Email) || !ValidateMS(data.Ms) {
 		c.JSON(400, gin.H{
-			"code":    "error",
-			"message": "Dữ liệu không hợp lệ !",
+			"status":    "Fail",
+			"message": "Dữ liệu không hợp lệ",
 			"data":    data,
 		})
 		c.Abort()

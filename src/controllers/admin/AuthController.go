@@ -61,7 +61,7 @@ func HandleLogin(c *gin.Context) {
 func HandleLogout(c *gin.Context) {
 	c.SetCookie("token", "", 3600*24, "/", "", true, true)
 	c.JSON(http.StatusOK, gin.H{
-		"code":    "Success",
+		"status":    "Success",
 		"message": "Đăng xuất thành công",
 	})
 }
@@ -84,7 +84,7 @@ func HandleCreateAdmin(c *gin.Context) {
 	}).Decode(&existingAdmin)
 	if err == nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Bảng ghi của admin này đã được lưu trong database trước đó",
 		})
 		return
@@ -98,8 +98,8 @@ func HandleCreateAdmin(c *gin.Context) {
 		"createdBy": createdBy,
 	})
 	c.JSON(http.StatusOK, gin.H{
-		"code": "success",
-		"message": "Tạo tài khoản admin thành công !",
+		"status": "Success",
+		"message": "Tạo tài khoản admin thành công",
 	})
 }
 
@@ -112,15 +112,15 @@ func HandleProfile(c *gin.Context) {
 	err := collection.FindOne(context.TODO(), bson.M{"_id": ID}).Decode(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"code": "error",
-			"error": "Không lấy được thông tin người dùng trong dữ liệu.",
+			"status": "Fail",
+			"message": "Không lấy được thông tin người dùng trong dữ liệu.",
 		})
 		return
 	}
 	//Trả kết quả
 	c.JSON(http.StatusOK, gin.H{
-		"code":    "success",
+		"status":    "Success",
 		"message": "Thành công",
-		"user":    user,
+		"data":    user,
 	})
 }

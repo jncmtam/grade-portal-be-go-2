@@ -14,24 +14,24 @@ import (
 func HandleCreateClass(c *gin.Context) {
 	var data InterfaceClass
 	if err := c.BindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Dữ liệu không hợp lệ",
 		})
 		return
 	}
 	courseID, err := bson.ObjectIDFromHex(data.CourseId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Course ID không hợp lệ",
 		})
 		return
 	}
 	teacherID, err := bson.ObjectIDFromHex(data.TeacherId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Teacher ID không hợp lệ",
 		})
 		return
@@ -42,8 +42,8 @@ func HandleCreateClass(c *gin.Context) {
 	// Kiểm tra xem lớp học có bị trùng không
 	isDuplicate, err := CheckDuplicateClass(collection, data.Semester, courseID, data.Name)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi kiểm tra dữ liệu",
 		})
 		return
@@ -51,8 +51,8 @@ func HandleCreateClass(c *gin.Context) {
 
 	// Nếu lớp học đã tồn tại, trả về lỗi
 	if isDuplicate {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Lớp học đã tồn tại",
 		})
 		return
@@ -72,16 +72,16 @@ func HandleCreateClass(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi tạo lớp học",
 		})
 		return
 	}
 
 	// Trả về kết quả thành công
-	c.JSON(http.StatusOK, gin.H{
-		"code":    "success",
+	c.JSON(200, gin.H{
+		"status":    "Success",
 		"message": "Tạo lớp học thành công",
 	})
 }
@@ -153,9 +153,9 @@ func CheckStudentOrTeacher(c *gin.Context, id string, mssv *string) bool { // St
 func HandleGetAllClassesByAccountID(c *gin.Context) {
 	accountID := c.Param("id")
 
-	var classes []bson.M
 	collection := models.ClassModel()
 	var mssv string
+
 
 	// Tìm tất cả lớp học mà giáo viên hoặc sinh viên với account_id tham gia
 	isStudent := CheckStudentOrTeacher(c, accountID, &mssv)
@@ -170,37 +170,24 @@ func HandleGetAllClassesByAccountID(c *gin.Context) {
 	cursor, err := collection.Find(context.TODO(), filter)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi truy xuất dữ liệu"})
 	}
-
+	var classes []models.InterfaceClass
 	// Đọc dữ liệu từ cursor
-	for cursor.Next(context.TODO()) {
-		var class bson.M
-		if err := cursor.Decode(&class); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"code":    "error",
-				"message": "Lỗi hệ thống."})
-			return
-		}
-		classes = append(classes, class)
-	}
-
-	if err := cursor.Err(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code":    "error",
-			"message": "Lỗi hệ thống."})
+	if err := cursor.All(context.TODO(), &classes); err != nil {
+		c.JSON(500, gin.H{
+				"status":    "Fail",
+				"message": "Lỗi khi giải mã tài khoản.",})
 		return
 	}
 
 	// Trả về danh sách lớp học
-	c.JSON(http.StatusOK, gin.H{
-		"code":  "success",
+	c.JSON(200, gin.H{
+		"status":  "Success",
 		"message": "Lấy lớp học thành công",
-		"data": gin.H{
-			"classes": classes,
-		},
+		"data": classes,
 	})
 }
 
@@ -209,8 +196,8 @@ func HandleGetClassByID(c *gin.Context) {
 	param := c.Param("id")
 	classID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":  "error",
+		c.JSON(400, gin.H{
+			"status":  "Fail",
 			"message": "ID không hợp lệ",
 		})
 		return
@@ -221,22 +208,22 @@ func HandleGetClassByID(c *gin.Context) {
 
 	if err := collection.FindOne(context.TODO(), bson.M{"_id": classID}).Decode(&class); err != nil {
 		if err == mongo.ErrNoDocuments {
-			c.JSON(http.StatusNotFound, gin.H{
-				"code":  "error",
+			c.JSON(404, gin.H{
+				"status":  "Fail",
 				"message": "Không tìm thấy lớp học",
 			})
 		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code":    "error",
-				"message": "Bạn không có quyền vào đây",
+			c.JSON(500, gin.H{
+				"status":    "Fail",
+				"message": "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu",
 			})
 			return
 		}
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":  "success",
+	c.JSON(200, gin.H{
+		"status":  "Success",
 		"message": "Lấy lớp học thành công",
 		"class":   class,
 	})

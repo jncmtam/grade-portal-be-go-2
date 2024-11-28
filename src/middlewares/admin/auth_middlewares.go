@@ -32,8 +32,8 @@ func HandleRequireAuth(c *gin.Context) {
     Claims, _ := helper.ParseJWT(token)
 	if Claims == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"code":    "error",
-			"massage": "Người dùng chưa đăng nhập",
+			"status":    "Fail",
+			"message": "Người dùng chưa đăng nhập",
 		})
 		c.Abort()
 		return
