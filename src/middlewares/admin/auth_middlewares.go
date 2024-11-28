@@ -1,7 +1,8 @@
 package middlewares_admin
 
 import (
-	// "Go2/helper"
+	"Go2/helper"
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +13,7 @@ func HandleRequireAuth(c *gin.Context) {
     // Lấy giá trị của header Authorization
     token := c.GetHeader("Authorization")
     if token == "" {
-        c.JSON(401, gin.H{"message": "Yêu cầu token"})
+        c.JSON(http.StatusUnauthorized, gin.H{"message": "Yêu cầu token"})
         c.Abort()
         return
     }
@@ -20,10 +21,20 @@ func HandleRequireAuth(c *gin.Context) {
     // Kiểm tra định dạng Bearer token
     if len(token) > 7 && strings.HasPrefix(token, "Bearer") {
     } else {
-        c.JSON(401, gin.H{"message": "Header Authorization không hợp lệ"})
+        c.JSON(http.StatusUnauthorized, gin.H{"message": "Header Authorization không hợp lệ"})
         c.Abort()
         return
     }
-
+    Claims, _ := helper.ParseJWT(token)
+	if Claims == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"code":    "error",
+			"massage": "Người dùng chưa đăng nhập",
+		})
+		c.Abort()
+		return
+	}
+	c.Set("ID", Claims.ID)
+	c.Next()
 
 }

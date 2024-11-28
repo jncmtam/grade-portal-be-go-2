@@ -18,19 +18,25 @@ func HandleLogin(c *gin.Context) {
 	var loginData AuthController
 	// Lấy dữ liệu từ front end
 	if err := c.BindJSON(&loginData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Dữ liệu yêu cầu không hợp lệ"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": "error",
+			"message": "Dữ liệu yêu cầu không hợp lệ"})
 		return
 	}
 	payload, err := idtoken.Validate(context.Background(), loginData.IDToken, os.Getenv("YOUR_CLIENT_ID"))
 	if err != nil {
 		fmt.Println("Không có token:", err)
-		c.JSON(401, gin.H{"error": "Token không hợp lệ !"})
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"code": "error",
+			"message": "Token không hợp lệ !"})
 		return
 	}
 	// Lấy ra email
 	email, emailOk := payload.Claims["email"].(string)
 	if !emailOk {
-		c.JSON(400, gin.H{"error": "Không lấy được thông tin người dùng"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": "error",
+			"message": "Không lấy được thông tin người dùng"})
 		return
 	}
 	// Tìm kiếm người dùng đã có trong database không
@@ -38,12 +44,14 @@ func HandleLogin(c *gin.Context) {
 	var user models.InterfaceAdmin
 	err = collection.FindOne(context.TODO(), bson.M{"email": email}).Decode(&user)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "Không lấy được thông tin người dùng trong dữ liệu."})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": "error",
+			"message": "Không lấy được thông tin người dùng trong dữ liệu."})
 		return
 	}
 	token := helper.CreateJWT(user.ID)
 	c.SetCookie("token", token, 3600*24, "/", "", true, true)
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code":  "Success",
 		"token": token,
 	})
@@ -52,7 +60,7 @@ func HandleLogin(c *gin.Context) {
 // HandleLogout xử lý việc đăng xuất.
 func HandleLogout(c *gin.Context) {
 	c.SetCookie("token", "", 3600*24, "/", "", true, true)
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code":    "Success",
 		"message": "Đăng xuất thành công",
 	})
@@ -60,10 +68,13 @@ func HandleLogout(c *gin.Context) {
 
 // HandleCreateAdmin xử lý việc tạo tài khoản admin mới.
 func HandleCreateAdmin(c *gin.Context) {
+	//Lấy admindata từ mdw
 	adminData, _ := c.Get("adminData")
 	data := adminData.(InterfaceAdminController)
 	collection := models.AdminModel()
+	//Lấy ID người tạo từ mdw
 	createdBy, _ := c.Get("ID")
+	//Check xem admin đó đã tồn tại hay chưa
 	var existingAdmin models.InterfaceAdmin
 	err := collection.FindOne(context.TODO(), bson.M{
 		"$or": bson.A{
@@ -72,12 +83,13 @@ func HandleCreateAdmin(c *gin.Context) {
 		},
 	}).Decode(&existingAdmin)
 	if err == nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    "error",
 			"message": "Bảng ghi của admin này đã được lưu trong database trước đó",
 		})
 		return
 	}
+	//Thêm admin và cơ sở dữ liệu
 	collection.InsertOne(context.TODO(), bson.M{
 		"email":     data.Email,
 		"name":      data.Name,
@@ -85,22 +97,28 @@ func HandleCreateAdmin(c *gin.Context) {
 		"ms":        data.Ms,
 		"createdBy": createdBy,
 	})
-	c.JSON(201, gin.H{
-		"code": "Tạo tài khoản admin thành công !",
+	c.JSON(http.StatusOK, gin.H{
+		"code": "success",
+		"message": "Tạo tài khoản admin thành công !",
 	})
 }
 
 // HandleProfile xử lý việc lấy thông tin tài khoản admin.
 func HandleProfile(c *gin.Context) {
 	ID, _ := c.Get("ID")
+	//Lấy thông tin admin từ cơ sở dữ liệu
 	collection := models.AdminModel()
 	var user models.InterfaceAdmin
 	err := collection.FindOne(context.TODO(), bson.M{"_id": ID}).Decode(&user)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "Không lấy được thông tin người dùng trong dữ liệu."})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": "error",
+			"error": "Không lấy được thông tin người dùng trong dữ liệu.",
+		})
 		return
 	}
-	c.JSON(200, gin.H{
+	//Trả kết quả
+	c.JSON(http.StatusOK, gin.H{
 		"code":    "success",
 		"message": "Thành công",
 		"user":    user,
