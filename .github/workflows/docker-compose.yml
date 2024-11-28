@@ -1,4 +1,4 @@
-name: LearnGo
+name: go2
 on:
   push:
     branches: [main]
