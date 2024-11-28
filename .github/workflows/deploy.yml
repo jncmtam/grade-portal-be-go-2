@@ -1,32 +1,36 @@
-name: go2
+name: Go CI
+
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
-  docker:
-    runs-on: self-hosted
+  build:
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
-      - name: Build and Push DockerFile
-        run: |
-          echo "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-          cd src/
-          sudo docker build -t go2 .
-          sudo docker push go2
-  deploy:
-    needs: docker
-    runs-on: self-hosted
-    steps:
-      - name: Pull docker image
-        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/go2:latest
-      - name: Delete old container
-        run: sudo docker rm -f go2
-      - name: Run docker container
-        run: |
-          cd ~
-          sudo docker run -d -p 8080:8080 --name go2 --env-file .env go2:latest
+      # Bước 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Bước 2: Thiết lập Go
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23  
+
+      # Bước 3: Cài đặt dependencies
+      - name: Install dependencies
+        run: go mod tidy
+
+      # Bước 4: Kiểm tra format code
+      - name: Check code format
+        run: go fmt ./...
+
+      # Bước 5: Chạy tests
+      - name: Run tests
+        run: go test ./... -v
