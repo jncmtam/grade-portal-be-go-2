@@ -5,7 +5,6 @@ import (
 	"Go2/models"
 	"context"
 	"fmt"
-	"net/http"
 	"os"
 
 	"cloud.google.com/go/auth/credentials/idtoken"
@@ -18,24 +17,24 @@ func HandleLogin(c *gin.Context) {
 	var loginData AuthController
 	// Lấy dữ liệu từ front end
 	if err := c.BindJSON(&loginData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code": "error",
+		c.JSON(400, gin.H{
+			"status":  "Fail",
 			"message": "Dữ liệu yêu cầu không hợp lệ"})
 		return
 	}
 	payload, err := idtoken.Validate(context.Background(), loginData.IDToken, os.Getenv("YOUR_CLIENT_ID"))
 	if err != nil {
 		fmt.Println("Không có token:", err)
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"code": "error",
-			"message": "Token không hợp lệ !"})
+		c.JSON(401, gin.H{
+			"status":  "Fail",
+			"message": "Token không hợp lệ"})
 		return
 	}
 	// Lấy ra email
 	email, emailOk := payload.Claims["email"].(string)
 	if !emailOk {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code": "error",
+		c.JSON(400, gin.H{
+			"status":  "Fail",
 			"message": "Không lấy được thông tin người dùng"})
 		return
 	}
@@ -44,15 +43,15 @@ func HandleLogin(c *gin.Context) {
 	var user models.InterfaceAdmin
 	err = collection.FindOne(context.TODO(), bson.M{"email": email}).Decode(&user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code": "error",
-			"message": "Không lấy được thông tin người dùng trong dữ liệu."})
+		c.JSON(500, gin.H{
+			"status":  "Fail",
+			"mesage": "Không lấy được thông tin người dùng trong cơ sở dữ liệu"})
 		return
 	}
 	token := helper.CreateJWT(user.ID)
 	c.SetCookie("token", token, 3600*24, "/", "", true, true)
-	c.JSON(http.StatusOK, gin.H{
-		"code":  "Success",
+	c.JSON(200, gin.H{
+		"status":  "Success",
 		"token": token,
 	})
 }
