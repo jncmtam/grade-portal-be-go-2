@@ -15,7 +15,7 @@ func HandleGetCourseByID(c *gin.Context) {
 	courseID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
 		c.JSON(400, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "ID không hợp lệ",
 		})
 		return
@@ -28,20 +28,20 @@ func HandleGetCourseByID(c *gin.Context) {
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			c.JSON(404, gin.H{
-				"status":  "error",
+				"status":    "Fail",
 				"message": "Không tìm thấy môn học",
 			})
 			return
 		}
 		c.JSON(500, gin.H{
-			"status":  "error",
+			"status":    "Fail",
 			"message": "Lỗi khi lấy môn học",
 		})
 		return
 	}
 
 	c.JSON(200, gin.H{
-		"status":  "success",
+		"status":  "Success",
 		"message": "Lấy môn học thành công",
 		"course":  course,
 	})

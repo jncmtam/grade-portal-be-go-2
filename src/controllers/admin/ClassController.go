@@ -113,7 +113,7 @@ func CheckStudentOrTeacher(c *gin.Context, id string, mssv *string) bool { // St
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi định dạng dữ liệu"})
 		return false // Xử lý lỗi và trả về false
 	}
@@ -125,7 +125,7 @@ func CheckStudentOrTeacher(c *gin.Context, id string, mssv *string) bool { // St
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi hệ thống"})
 		return false // Xử lý lỗi và trả về false
 	}
@@ -140,7 +140,7 @@ func CheckStudentOrTeacher(c *gin.Context, id string, mssv *string) bool { // St
 		return true
 	} else if err := cursor.Err(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi hệ thống."})
 		return false
 	}
@@ -405,7 +405,7 @@ func HandleDeleteClass(c *gin.Context) {
 	classID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
 		c.JSON(400, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "ID không hợp lệ",
 		})
 		return
@@ -414,13 +414,13 @@ func HandleDeleteClass(c *gin.Context) {
 	_, err = collection.DeleteOne(context.TODO(), bson.M{"_id": classID})
 	if err != nil {
 		c.JSON(500, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi khi xóa lớp học",
 		})
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":    "success",
+		"status":    "Success",
 		"message": "Xóa lớp học thành công",
 	})
 }

@@ -18,5 +18,5 @@ func ResultRoute(r *gin.RouterGroup) {
     // Lấy kết quả điểm theo ID
     r.GET("/:id", controller_client.HandleResult)
     // Cập nhật kết quả điểm theo ID, yêu cầu quyền giáo viên
-    r.PATCH("/:id", middlewares_client.RequireTeacher, controller_client.HandlePatchResult)
+    r.PATCH("change/:id", middlewares_client.RequireTeacher, controller_client.HandlePatchResult)
 }

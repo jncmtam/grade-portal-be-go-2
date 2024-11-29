@@ -192,7 +192,7 @@ func HandleGetPrevSemesterAllHallOfFame(c *gin.Context) {
 	cursor, err := collection.Find(context.TODO(), filter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"code": "error",
+			"status":    "Fail",
 			"message": "Đã xảy ra lỗi khi truy vấn dữ liệu",
 		})
 		return
@@ -204,7 +204,7 @@ func HandleGetPrevSemesterAllHallOfFame(c *gin.Context) {
 		var data InterfaceTier
 		if err := cursor.Decode(&data); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": "error",
+				"status":    "Fail",
 				"message": "Đã xảy ra lỗi khi giải mã dữ liệu"})
 			return
 		}
@@ -214,7 +214,7 @@ func HandleGetPrevSemesterAllHallOfFame(c *gin.Context) {
 	// Kiểm tra xem có kết quả nào không
 	if len(tierData) == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
-			"code": "error",
+			"status":    "Fail",
 			"message": "Không tìm thấy dữ liệu cho học kỳ trước"})
 		return
 	} else {
@@ -224,7 +224,7 @@ func HandleGetPrevSemesterAllHallOfFame(c *gin.Context) {
 
 	// Trả về tất cả các bản ghi nếu tìm thấy
 	c.JSON(http.StatusOK, gin.H{
-		"code":  "success",
+		"status":  "Success",
 		"message": "Lấy hall of fame thành công",
 		"data":    hallOfFameData,
 	})

@@ -15,7 +15,7 @@ func HandleTeacherClasses(c *gin.Context) {
 	user := data.(models.InterfaceAccount)
 	if user.Role != "teacher" {
 		c.JSON(401, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Chỉ giáo viên mới được phép truy cập",
 		})
 		return
@@ -28,7 +28,7 @@ func HandleTeacherClasses(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(401, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi khi tìm lớp học",
 		})
 		return
@@ -36,13 +36,13 @@ func HandleTeacherClasses(c *gin.Context) {
 	defer cursor.Close(context.TODO())
 	if err := cursor.All(context.TODO(), &classTeacherAll); err != nil {
 		c.JSON(401, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi khi đọc dữ liệu lớp học",
 		})
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":     "success",
+		"status":     "Success",
 		"classAll": classTeacherAll,
 	})
 }
@@ -59,7 +59,7 @@ func HandleStudentClasses(c *gin.Context) {
 	})
 	if err != nil {
 		c.JSON(401, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi khi tìm lớp học",
 		})
 		return
@@ -67,13 +67,13 @@ func HandleStudentClasses(c *gin.Context) {
 	defer cursor.Close(context.TODO())
 	if err := cursor.All(context.TODO(), &classStudentAll); err != nil {
 		c.JSON(401, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi khi đọc dữ liệu lớp học",
 		})
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":     "success",
+		"status":     "Success",
 		"classAll": classStudentAll,
 	})
 }
@@ -90,7 +90,7 @@ func HandleUserClasses(c *gin.Context) {
 		return
 	}
 	c.JSON(400, gin.H{
-		"code":    "error",
+		"status":    "Fail",
 		"message": "Không tìm thấy người dùng",
 	})
 }
@@ -108,7 +108,7 @@ func HandleClassDetail(c *gin.Context) {
 	}).Decode(&classDetail)
 	if err != nil {
 		c.JSON(400, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Không tìm thấy lớp học",
 		})
 		return
@@ -118,33 +118,35 @@ func HandleClassDetail(c *gin.Context) {
 		for _, studentMs := range listStudent {
 			if studentMs == user.Ms {
 				c.JSON(200, gin.H{
-					"code":        "success",
-					"classDetail": classDetail,
+					"status":        "Success",
+					"message": "Lấy lớp học thành công",
+					"data": classDetail,
 				})
 				return
 			}
 		}
 		c.JSON(401, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Chỉ sinh viên mới được phép truy cập",
 		})
 		return
 	} else if user.Role == "teacher" {
 		if user.ID != classDetail.TeacherId {
 			c.JSON(401, gin.H{
-				"code":    "error",
+				"status":    "Fail",
 				"message": "Chỉ giáo viên mới được phép truy cập",
 			})
 			return
 		}
 		c.JSON(200, gin.H{
-			"code":        "success",
-			"classDetail": classDetail,
+			"status":        "Success",
+			"message": "Lấy lớp học thành công",
+			"data": classDetail,
 		})
 		return
 	}
 	c.JSON(401, gin.H{
-		"code":    "error",
+		"status":    "Fail",
 		"message": "Chỉ sinh viên và giáo viên mới được phép truy cập",
 	})
 }
@@ -170,7 +172,7 @@ func HandleCountDocuments(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":  "success",
+		"status":  "Success",
 		"count": count,
 	})
 }

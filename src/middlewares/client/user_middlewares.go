@@ -13,14 +13,18 @@ import (
 func RequireUser(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	if token == "" {
-		c.JSON(401, gin.H{"message": "Yêu cầu cung cấp token"})
+		c.JSON(401, gin.H{
+			"status": "Fail",
+			"message": "Yêu cầu cung cấp token"})
 		c.Abort()
 		return
 	}
 
 	// Kiểm tra định dạng Bearer token
 	if !strings.HasPrefix(token, "Bearer ") {
-		c.JSON(401, gin.H{"message": "Header Authorization không hợp lệ"})
+		c.JSON(401, gin.H{
+			"status": "Fail",
+			"message": "Header Authorization không hợp lệ"})
 		c.Abort()
 		return
 	}
@@ -28,7 +32,9 @@ func RequireUser(c *gin.Context) {
 	token = token[7:] // Loại bỏ tiền tố "Bearer "
 	claims, err := helper.ParseJWT(token)
 	if err != nil || claims == nil {
-		c.JSON(401, gin.H{"message": "Người dùng chưa đăng nhập !"})
+		c.JSON(401, gin.H{
+			"status": "Fail",
+			"message": "Người dùng chưa đăng nhập !"})
 		c.Abort()
 		return
 	}
@@ -37,7 +43,9 @@ func RequireUser(c *gin.Context) {
 	collection := models.AccountModel()
 	err = collection.FindOne(context.TODO(), bson.M{"_id": claims.ID}).Decode(&user)
 	if err != nil {
-		c.JSON(401, gin.H{"message": "Không tìm thấy người dùng"})
+		c.JSON(401, gin.H{
+			"status": "Fail",
+			"message": "Không tìm thấy người dùng"})
 		c.Abort()
 		return
 	}
@@ -49,14 +57,18 @@ func RequireUser(c *gin.Context) {
 func RequireTeacher(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {
-		c.JSON(401, gin.H{"message": "Người dùng chưa đăng nhập !"})
+		c.JSON(401, gin.H{
+			"status": "Fail",
+			"message": "Người dùng chưa đăng nhập !"})
 		c.Abort()
 		return
 	}
 
 	account := user.(models.InterfaceAccount)
 	if account.Role != "teacher" {
-		c.JSON(403, gin.H{"message": "Chỉ giáo viên mới có quyền truy cập"})
+		c.JSON(403, gin.H{
+			"status": "Fail",
+			"message": "Chỉ giáo viên mới có quyền truy cập"})
 		c.Abort()
 		return
 	}
