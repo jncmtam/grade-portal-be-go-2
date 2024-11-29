@@ -152,7 +152,7 @@ func HandleGetTeacherAccounts(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status":    "Success",
 			"message":      "Tìm tài khoản thành công",
-			"foundedUser": teachers,
+			"data": teachers,
 		})
 		return
 	} else {
@@ -177,7 +177,7 @@ func HandleGetTeacherAccounts(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status":    "Success",
 			"message":      "Tìm tài khoản thành công",
-			"foundedUser": teacher,
+			"data": teacher,
 		})
 		return;
 	}
@@ -215,7 +215,7 @@ func HandleGetStudentAccounts(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status":    "Success",
 			"message":      "Tìm thấy tài khoản thành công",
-			"foundedUser": students,
+			"data": students,
 		})
 	} else {
 	// Lấy sinh viên theo mã số
@@ -237,7 +237,7 @@ func HandleGetStudentAccounts(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status":    "Success",
             "message":      "Tìm thấy tài khoản thành công",
-			"foundedUser": student,
+			"data": student,
 		})
 	}
 }
