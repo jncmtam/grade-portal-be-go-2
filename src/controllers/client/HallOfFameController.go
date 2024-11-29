@@ -29,7 +29,9 @@ func GetAllPrevSemester(c *gin.Context) {
     cursor, err := collection.Find(context.TODO(), filter)
     if err != nil {
         // Trả về phản hồi lỗi nếu truy vấn thất bại
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "Đã xảy ra lỗi khi truy vấn dữ liệu"})
+        c.JSON(http.StatusInternalServerError, gin.H{
+            "status":    "Fail",
+            "message": "Đã xảy ra lỗi khi truy vấn dữ liệu"})
         return
     }
     defer cursor.Close(context.TODO())
@@ -39,7 +41,9 @@ func GetAllPrevSemester(c *gin.Context) {
         var data InterfaceTier
         if err := cursor.Decode(&data); err != nil {
             // Trả về phản hồi lỗi nếu giải mã thất bại
-            c.JSON(http.StatusInternalServerError, gin.H{"error": "Đã xảy ra lỗi khi giải mã dữ liệu"})
+            c.JSON(http.StatusInternalServerError, gin.H{
+                "status":    "Fail",
+                "message": "Đã xảy ra lỗi khi giải mã dữ liệu"})
             return
         }
         tierData = append(tierData, data)
@@ -48,7 +52,9 @@ func GetAllPrevSemester(c *gin.Context) {
     // Kiểm tra xem có dữ liệu nào được tìm thấy không
     if len(tierData) == 0 {
         // Trả về phản hồi không tìm thấy nếu không có dữ liệu
-        c.JSON(http.StatusNotFound, gin.H{"error": "Không tìm thấy dữ liệu cho học kỳ trước"})
+        c.JSON(http.StatusNotFound, gin.H{
+            "status":    "Fail",
+            "message": "Không tìm thấy dữ liệu cho học kỳ trước"})
         return
     }
 
@@ -58,7 +64,7 @@ func GetAllPrevSemester(c *gin.Context) {
 
     // Trả về phản hồi thành công với dữ liệu
     c.JSON(http.StatusOK, gin.H{
-        "status":  "thành công",
+        "status":  "Success",
         "message": "Lấy hall of fame thành công",
         "data":    hallOfFameData,
     })
