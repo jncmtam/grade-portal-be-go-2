@@ -16,7 +16,7 @@ func HandleCreateResult(c *gin.Context) {
 	// Binding dữ liệu
 	if err := c.BindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Dữ liệu không hợp lệ",
 		})
 		return
@@ -24,8 +24,8 @@ func HandleCreateResult(c *gin.Context) {
 	// Kiểm tra ClassID có đúng định dạng không
 	classID, err := bson.ObjectIDFromHex(data.ClassID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Mã lớp học không đúng định dạng.",
 		})
 		return
@@ -34,8 +34,8 @@ func HandleCreateResult(c *gin.Context) {
 	var classDetail models.InterfaceClass
 	collectionClass := models.ClassModel()
 	if err = collectionClass.FindOne(context.TODO(), bson.M{"_id": classID}).Decode(&classDetail); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Không tìm thấy lớp học đó",
 		})
 		return
@@ -52,14 +52,14 @@ func HandleCreateResult(c *gin.Context) {
 		update := bson.M{"$set": bson.M{"score": data.SCORE, "updatedBy": createdBy, "expiredAt": time.Now().AddDate(0, 6, 0)}};
 		_ , err := collection.UpdateOne(context.TODO(), filter, update);
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"code":    "error",
+			c.JSON(500, gin.H{
+				"status":    "Fail",
 				"message": "Cập nhật bảng điểm thât bại!.",
 			})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{
-			"code":    "success",
+			"status":    "Success",
 			"message": "Cập nhật bảng điểm thành công",
 		})
 		return
@@ -75,7 +75,7 @@ func HandleCreateResult(c *gin.Context) {
 		"updatedBy": createdBy,
 	})
 	c.JSON(http.StatusOK, gin.H{
-		"code":    "success",
+		"status":    "Success",
 		"message": "Thêm bảng điểm thành công.",
 	})
 }
@@ -87,7 +87,7 @@ func HandleGetResult(c *gin.Context) {
 	classID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Mã lớp học không đúng định dạng.",
 		})
 		return
@@ -96,14 +96,14 @@ func HandleGetResult(c *gin.Context) {
 	collection := models.ResultScoreModel()
 	var data models.InterfaceResult
 	if err = collection.FindOne(context.TODO(), bson.M{"class_id": classID}).Decode(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Không tìm thấy bảng điểm.",
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"code":    "success",
+		"status":    "Success",
 		"message": "Lấy bảng điểm thành công.",
 		"score":   data,
 	})

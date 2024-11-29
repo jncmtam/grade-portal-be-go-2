@@ -117,8 +117,8 @@ func HandleCreateHallOfFame(c *gin.Context) {
 		"semester": semester.PREV,
 	})
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi tìm kiếm bản ghi",
 		})
 		return
@@ -126,7 +126,7 @@ func HandleCreateHallOfFame(c *gin.Context) {
 	defer cursor.Close(context.TODO())
 	if err = cursor.All(context.TODO(), &results); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi tìm kiếm bản ghi",
 		})
 		return
@@ -140,7 +140,7 @@ func HandleCreateHallOfFame(c *gin.Context) {
 			avgStudentScores, err := CalculateAvgStudentScores(result.Semester, result.CourseID)
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
-					"code":    "error",
+					"status":    "Fail",
 					"message": err,
 				})
 				return
@@ -172,7 +172,7 @@ func HandleCreateHallOfFame(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"code":    "success",
+		"status":    "Success",
 		"message": "Cập nhật Hall Of Fame thành công",
 	})
 }

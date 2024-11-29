@@ -234,35 +234,31 @@ func HandleGetClassesByCourseID(c *gin.Context) {
 	param := c.Param("id")
 	courseID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":  "error",
+		c.JSON(400, gin.H{
+			"status":  "Fail",
 			"message": "ID không hợp lệ",
 		})
 		return
 	}
-	var classes []models.InterfaceClass
 	collection := models.ClassModel()
 	cursor, err := collection.Find(context.TODO(), bson.M{"course_id": courseID})
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":  "error",
+		c.JSON(400, gin.H{
+			"status":  "Fail",
 			"message": "Không tìm thấy lớp học",
 		})
 		return
 	}
-	for cursor.Next(context.Background()) {
-		var class models.InterfaceClass
-		if err := cursor.Decode(&class); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"code":  "error",
-				"message": "Lỗi khi giải mã dữ liệu",
-			})
-			return
-		}
-		classes = append(classes, class)
+	var classes []models.InterfaceClass
+	// Đọc dữ liệu từ cursor
+	if err := cursor.All(context.TODO(), &classes); err != nil {
+		c.JSON(500, gin.H{
+				"status":    "Fail",
+				"message": "Lỗi khi giải mã tài khoản.",})
+		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code":  "success",
+	c.JSON(200, gin.H{
+		"status":  "Success",
 		"message": "Lấy lớp học thành công",
 		"classes": classes,
 	})
@@ -273,8 +269,8 @@ func HandleAddStudentsToClass(c *gin.Context) {
 	var request InterfaceAddStudentClassController
 
 	if err := c.BindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
@@ -282,8 +278,8 @@ func HandleAddStudentsToClass(c *gin.Context) {
 	collection := models.ClassModel()
 	classID, err := bson.ObjectIDFromHex(request.ClassId)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "ID lớp học không hợp lệ",
 		})
 		return
@@ -298,15 +294,15 @@ func HandleAddStudentsToClass(c *gin.Context) {
 	}
 	_, err = collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi thêm học sinh vào lớp học",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":    "success",
+	c.JSON(200, gin.H{
+		"status":    "Success",
 		"message": "Thêm học sinh vào lớp học thành công",
 	})
 }
@@ -316,16 +312,16 @@ func HandleUpdateClass(c *gin.Context) {
 	param := c.Param("id")
 	classID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "ID không hợp lệ",
 		})
 		return
 	}
 	var data InterfaceChangeClassController
 	if err := c.BindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Dữ liệu không hợp lệ",
 		})
 		return
@@ -335,8 +331,8 @@ func HandleUpdateClass(c *gin.Context) {
 	if courseIDStr != "" {
 		courseID, err = bson.ObjectIDFromHex(courseIDStr)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"code":    "error",
+			c.JSON(400, gin.H{
+				"status":    "Fail",
 				"message": "Course ID không hợp lệ",
 			})
 			return
@@ -347,8 +343,8 @@ func HandleUpdateClass(c *gin.Context) {
 	if teacherIDStr != "" {
 		teacherID, err := bson.ObjectIDFromHex(teacherIDStr)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"code":    "error",
+			c.JSON(400, gin.H{
+				"status":    "Fail",
 				"message": "Teacher ID không hợp lệ",
 			})
 			return
@@ -356,8 +352,8 @@ func HandleUpdateClass(c *gin.Context) {
 		data.TeacherId = teacherID
 	}
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Course ID không hợp lệ",
 		})
 		return
@@ -368,8 +364,8 @@ func HandleUpdateClass(c *gin.Context) {
 	// Kiểm tra xem lớp học có bị trùng không
 	isDuplicate, err := CheckDuplicateClass(collection, data.Semester, courseID, data.Name)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi kiểm tra dữ liệu",
 		})
 		return
@@ -377,8 +373,8 @@ func HandleUpdateClass(c *gin.Context) {
 	
 	// Nếu lớp học đã tồn tại, trả về lỗi
 	if isDuplicate {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    "error",
+		c.JSON(400, gin.H{
+			"status":    "Fail",
 			"message": "Lớp học đã tồn tại",
 		})
 		return
@@ -387,20 +383,19 @@ func HandleUpdateClass(c *gin.Context) {
 	// Thêm nếu không bị trùng lặp
 	updatedBy, _ := c.Get("ID")
 	data.UpdatedBy = updatedBy
-	class, err := collection.UpdateOne(context.TODO(), bson.M{"_id": classID}, bson.M{"$set": data})
+	_ , err = collection.UpdateOne(context.TODO(), bson.M{"_id": classID}, bson.M{"$set": data})
 	
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi cập nhật lớp học",
 		})
 		return
 	}
 	
-	c.JSON(http.StatusOK, gin.H{
-		"code":    "success",
+	c.JSON(200, gin.H{
+		"status":    "Success",
 		"message": "Cập nhật lớp học thành công",
-		"class":   class,
 	})
 }
 
@@ -409,7 +404,7 @@ func HandleDeleteClass(c *gin.Context) {
 	param := c.Param("id")
 	classID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(400, gin.H{
 			"code":    "error",
 			"message": "ID không hợp lệ",
 		})
@@ -418,13 +413,13 @@ func HandleDeleteClass(c *gin.Context) {
 	collection := models.ClassModel()
 	_, err = collection.DeleteOne(context.TODO(), bson.M{"_id": classID})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(500, gin.H{
 			"code":    "error",
 			"message": "Lỗi khi xóa lớp học",
 		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(200, gin.H{
 		"code":    "success",
 		"message": "Xóa lớp học thành công",
 	})
