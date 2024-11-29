@@ -133,7 +133,7 @@ func HandleGetCourseByID(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"status":  "Success",
 		"message": "Lấy môn học thành công",
-		"course":  course,
+		"data":  course,
 	})
 }
 

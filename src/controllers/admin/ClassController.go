@@ -225,7 +225,7 @@ func HandleGetClassByID(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"status":  "Success",
 		"message": "Lấy lớp học thành công",
-		"class":   class,
+		"data":   class,
 	})
 }
 
@@ -260,7 +260,7 @@ func HandleGetClassesByCourseID(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"status":  "Success",
 		"message": "Lấy lớp học thành công",
-		"classes": classes,
+		"data": classes,
 	})
 }
 

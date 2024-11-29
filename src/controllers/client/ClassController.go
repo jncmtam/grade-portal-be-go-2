@@ -43,7 +43,7 @@ func HandleTeacherClasses(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"status":     "Success",
-		"classAll": classTeacherAll,
+		"data": classTeacherAll,
 	})
 }
 
@@ -74,7 +74,7 @@ func HandleStudentClasses(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"status":     "Success",
-		"classAll": classStudentAll,
+		"data": classStudentAll,
 	})
 }
 
@@ -173,6 +173,6 @@ func HandleCountDocuments(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"status":  "Success",
-		"count": count,
+		"data": count,
 	})
 }

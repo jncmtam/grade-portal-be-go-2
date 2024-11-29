@@ -141,7 +141,7 @@ func HandleCreateHallOfFame(c *gin.Context) {
 			if err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{
 					"status":    "Fail",
-					"message": err,
+					"message": err.Error(),
 				})
 				return
 			}

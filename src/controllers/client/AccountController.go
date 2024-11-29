@@ -76,7 +76,7 @@ func HandleAccount(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"status": "success",
-		"user": user,
+		"data": user,
 	})
 }
 
@@ -107,6 +107,6 @@ func HandleGetInfoByID(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"status":    "Success",
 		"message": "Thành công",
-		"teacher": teacher,
+		"data": teacher,
 	})
 }

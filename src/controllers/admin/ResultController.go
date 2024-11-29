@@ -105,6 +105,6 @@ func HandleGetResult(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":    "Success",
 		"message": "Lấy bảng điểm thành công.",
-		"score":   data,
+		"data":   data,
 	})
 }
