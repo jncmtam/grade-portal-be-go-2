@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // HandleResult xử lý yêu cầu lấy kết quả điểm của người dùng
@@ -114,12 +115,11 @@ func HandleCreateResult(c *gin.Context) {
 
 // HandlePatchResult xử lý yêu cầu cập nhật kết quả điểm
 func HandlePatchResult(c *gin.Context) {
-	id := c.Param("id")
 	data, _ := c.Get("user")
 	user := data.(models.InterfaceAccount)
 	var dataResult InterfaceResultScoreController
 	c.BindJSON(&dataResult)
-	classID, _ := bson.ObjectIDFromHex(id)
+	classID, _ := bson.ObjectIDFromHex(dataResult.ClassID)
 	collection := models.ResultScoreModel()
 
 	// Cập nhật kết quả điểm
@@ -139,7 +139,7 @@ func HandlePatchResult(c *gin.Context) {
 		return
 	}
 
-	if result.MatchedCount != 0 {
+	if result.MatchedCount == 0 {
 		c.JSON(400, gin.H{
 			"status":    "Fail",
 			"message": "Thay đổi không hợp lệ",
@@ -175,7 +175,15 @@ func HandleCourseResult(c *gin.Context) {
 	collectionResult := models.ResultScoreModel()
 
 	// Tìm kiếm kết quả điểm theo course_id và học kỳ
-	if err := collectionResult.FindOne(context.TODO(), bson.M{"course_id": course.ID, "semester": params[1]}).Decode(&result); err != nil {
+	err := collectionResult.FindOne(context.TODO(), bson.M{"course_id": course.ID, "semester": params[1]}).Decode(&result);
+	if err != nil {
+		if err == mongo.ErrNoDocuments{
+			c.JSON(200, gin.H{
+				"status":    "Success",
+				"message": "Không có bảng điểm",
+			})
+			return
+		}
 		c.JSON(400, gin.H{
 			"status":    "Fail",
 			"message": "ID course sai",

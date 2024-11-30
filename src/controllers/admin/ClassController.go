@@ -40,7 +40,7 @@ func HandleCreateClass(c *gin.Context) {
 	collection := models.ClassModel()
 
 	// Kiểm tra xem lớp học có bị trùng không
-	isDuplicate, err := CheckDuplicateClass(collection, data.Semester, courseID, data.Name)
+	isDuplicate, err := CheckDuplicateClass(collection, data.Semester, courseID, data.Name, teacherID)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"status":    "Fail",
@@ -87,7 +87,7 @@ func HandleCreateClass(c *gin.Context) {
 }
 
 // CheckDuplicateClass kiểm tra xem lớp học có bị trùng không.
-func CheckDuplicateClass(collection *mongo.Collection, semester string, courseID bson.ObjectID, name string) (bool, error) {
+func CheckDuplicateClass(collection *mongo.Collection, semester string, courseID bson.ObjectID, name string, teacherID bson.ObjectID) (bool, error) {
 
 	// Sử dụng FindOne để kiểm tra xem có bản ghi nào không
 	var result bson.M
@@ -95,6 +95,7 @@ func CheckDuplicateClass(collection *mongo.Collection, semester string, courseID
 		"semester":  semester,
 		"course_id": courseID,
 		"name":      name,
+		"teacher_id": teacherID,
 	}).Decode(&result)
 	if err == mongo.ErrNoDocuments {
 		return false, nil // Không tìm thấy bản ghi
@@ -326,6 +327,20 @@ func HandleUpdateClass(c *gin.Context) {
 		})
 		return
 	}
+	if data.Name == "" {
+		c.JSON(400, gin.H{
+      "status":    "Fail",
+      "message": "Tên lớp không được để trống",
+    })
+    return
+	}
+	if data.Semester == "" {
+		c.JSON(400, gin.H{
+      "status":    "Fail",
+      "message": "Semester không được để trống",
+    })
+    return
+	}
 	var courseID bson.ObjectID
 	courseIDStr, _ := data.CourseId.(string)
 	if courseIDStr != "" {
@@ -351,6 +366,7 @@ func HandleUpdateClass(c *gin.Context) {
 		}
 		data.TeacherId = teacherID
 	}
+	teacherID, _ := bson.ObjectIDFromHex(teacherIDStr)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"status":    "Fail",
@@ -362,8 +378,8 @@ func HandleUpdateClass(c *gin.Context) {
 	collection := models.ClassModel()
 	
 	// Kiểm tra xem lớp học có bị trùng không
-	isDuplicate, err := CheckDuplicateClass(collection, data.Semester, courseID, data.Name)
-	if err != nil {
+	isDuplicate, err := CheckDuplicateClass(collection, data.Semester, courseID, data.Name, teacherID)
+	if err != nil {	
 		c.JSON(500, gin.H{
 			"status":    "Fail",
 			"message": "Lỗi khi kiểm tra dữ liệu",
