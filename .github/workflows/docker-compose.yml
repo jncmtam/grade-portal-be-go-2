@@ -19,14 +19,14 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          # Sử dụng Secrets để login DockerHub
+          # Sử dụng Secrets Github để login DockerHub
           echo "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           sudo docker-compose build app
           sudo docker-compose push app
 
       - name: Deploy Application
         run: |
-          # Sử dụng Secrets để deploy ứng dụng
+          # Sử dụng Secrets Github để deploy ứng dụng
           sudo docker-compose pull app
           sudo docker-compose down    
           sudo docker-compose up -d
