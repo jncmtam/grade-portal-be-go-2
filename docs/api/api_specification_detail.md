@@ -15,7 +15,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
   {
     "idToken": ""
   }
-```
+
 - **Response:**
 - 200 OK:
   ```json
@@ -23,35 +23,35 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "status": "Success",
     "token": ""
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Token không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Tài khoản không tồn tại"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi lấy dữ liệu từ server database."
   }
-```
+
 ##### b. Logout
 - **Mô tả:** Được sử dụng để admin đăng xuất
 - **URL:** `/admin/api/logout`
@@ -64,14 +64,14 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "status": "Success",
     "message": "Đăng xuất thành công"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Token không hợp lệ"
   }
-```
+
 ##### c. CreateAdmin
 - **Mô tả:** Được sử dụng để tạo tài khoản cho admin
 - **URL:** `/admin/api/create`
@@ -85,7 +85,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "faculty": ""  , 
     "ms":      "" 
   }
-```
+
 - **Response:**
 - 200 OK:
   ```json
@@ -93,28 +93,28 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "status": "Success",
     "message": "Tạo tài khoản admin thành công"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Token không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi tạo tài khoản admin."
   }
-```
+
 ##### d. ProfileAdmin
 - **Mô tả:** Được sử dụng để hiển thị thông tin admin đang đăng nhập.
 - **URL:** `/admin/api/profile`
@@ -133,21 +133,21 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 	        "Faculty": "KHMT",
 	        "CreatedBy": "674d498fce1b803519045d80"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Token không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Không lấy được thông tin người dùng trong dữ liệu."
   }
-```
+
 #### 1.2. Account (Những hoạt động liên quan tới tài khoản giảng viên và sinh viên):
 ##### a. CreateAccount
 - **Mô tả:** Được sử dụng để tạo tài khoản giảng viên và sinh viên.
@@ -172,45 +172,45 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 	    "role": "student"
 	  }
   ]
-```
+
 - **Response:**
 - 200 OK:
   ```json
   {
-    "invalidAccounts": null,
-    "status": "Success",
-    "validAccounts": [
-	    {
-		    "email": "test22@hcmut.edu.vn",
-		    "name": "test",
-		    "ms": "2222222",
-		    "faculty": "BDCN",
-		    "role": "teacher"
-		},
-		{
-		    "email": "test33@hcmut.edu.vn",
-		    "name": "test",
-		    "ms": "3333333",
-		    "faculty": "BDCN",
-		    "role": "student"
-		}
-    ]
-}
-```
+      "invalidAccounts": null,
+      "status": "Success",
+      "validAccounts": [
+        {
+          "email": "test22@hcmut.edu.vn",
+          "name": "test",
+          "ms": "2222222",
+          "faculty": "BDCN",
+          "role": "teacher"
+      },
+      {
+          "email": "test33@hcmut.edu.vn",
+          "name": "test",
+          "ms": "3333333",
+          "faculty": "BDCN",
+          "role": "student"
+      }
+      ]
+  }
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi tạo tài khoản."
   }
-```
+
 ##### b. GetAllTeacher
 - **Mô tả:** Được sử dụng để lấy tất cả thông tin tất cả giảng viên.
 - **URL:** `/admin/api/account/teacher`
@@ -245,21 +245,21 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
         }
     ],
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không có tài khoản nào trong cơ sở dữ liệu"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu"
   }
-```
+
 ##### c. GetAllStudent
 - **Mô tả:** Được sử dụng để lấy thông tin tất cả tài khoản của sinh viên.
 - **URL:** `/admin/api/account/student`
@@ -294,21 +294,21 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
         }
     ],
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không có tài khoản nào trong cơ sở dữ liệu"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu"
   }
-```
+
 ##### d. GetAccountByID
 - **Mô tả:** Được sử dụng để lấy thông tin tài khoản dựa trên id của giảng viên hoặc sinh viên.
 - **URL:** `/admin/api/account/{id}`
@@ -337,28 +337,28 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Tìm tài khoản thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy tài khoản"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi lấy tài khoản từ cơ sở dữ liệu"
   }
-```
+
 ##### e. DeletedAccountByID
 - **Mô tả:** Được sử dụng để xóa tài khoản giảng viên và sinh viên.
 - **URL:** `/admin/api/account/delete/{id}`
@@ -377,21 +377,21 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Xóa tài khoản thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi xóa tài khoản"
   }
-```
+
 ##### f. ChangeAccountInfoByID
 - **Mô tả:** Được sử dụng để cập nhật giá trị một vài thuộc tính cho giảng viên và sinh viên
 - **URL:** `/admin/api/account/change/{id}`
@@ -405,33 +405,33 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 -  **Request body:**
   ```json
   {
-    "name": "Le Van A",
-    "faculty": "KTHH",
-    "role": "teacher"
-}
-```
+      "name": "Le Van A",
+      "faculty": "KTHH",
+      "role": "teacher"
+  }
+
 - **Response:**
 - 200 OK:
   ```json
   {
     "message": "Cập nhật tài khoản thành công",
-    "status": "Success"
+    "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
-	"status":    "Fail",
-    "message": "Lỗi khi cập nhật tài khoản vào cơ sở dữ liệu"
+	  "status":    "Fail",
+    "message": "Lỗi khi cập nhật tài khoản vào cơ sở dữ liệu"
   }
-```
+
 #### 1.3. Class (Những hoạt động liên quan tới lớp học):
 ##### a. CreateClass
 - **Mô tả:** Được sử dụng để tạo ra lớp học mới.
@@ -440,7 +440,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 - **Xác thực**: Bearer `<token>`
 -  **Request body:**
   ```json
-{
+  { 
     "semester":       "HK242",
     "name":           "L01",
     "course_id":      "672b86fd226ae67ef9aaa045",
@@ -453,29 +453,28 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     ],
     "teacher_id":     "672b85b8226ae67ef9aaa006"
   }
-```
 - **Response:**
 - 200 OK:
   ```json
   {
-    "status": "Success",
-    message: "Tạo lớp học thành công"
- }
-```
+      "status": "Success",
+      "message": "Tạo lớp học thành công"
+  }
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi tạo lớp học"
   }
-```
+
 ##### b. GetAllClassesByAccountID
 - **Mô tả:** Được sử dụng để lấy thông tin của tất cả lớp học thông qua id của giảng viên hoặc sinh viên. Nếu là giảng viên thì lấy lớp giảng viên đó đang phụ trách, nếu là sinh viên thì lấy thông tin lớp sinh viên đó đang tham gia.
 - **URL:** `/admin/api/class/account/{id}`
@@ -491,49 +490,49 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 - 200 OK:
   ```json
   {
-    "message": "Lấy lớp học thành công",
-    "status": "Success",
-    "data": [
-        {
-            "ID": "67375642ec72767cfd44630c",
-            "Semester": "HK241",
-            "Name": "L03",
-            "CourseId": "672b86fd226ae67ef9aaa045",
-            "ListStudentMs": null,
-            "TeacherId": "672b85b8226ae67ef9aaa005",
-            "CreatedBy": "6730d78984648a9d5ba4d2ec",
-            "UpdatedBy": "6730d78984648a9d5ba4d2ec"
-        },
-        {
-            "ID": "672b87af226ae67ef9aaa047",
-            "Semester": "HK233",
-            "Name": "L01",
-            "CourseId": "672b86fd226ae67ef9aaa045",
-            "ListStudentMs": [
-                "2210001",
-                "2210002"
-            ],
-            "TeacherId": "672b85b8226ae67ef9aaa005",
-            "CreatedBy": "670de16d6fbedac9e3b8d00a",
-            "UpdatedBy": "670de16d6fbedac9e3b8d00a"
-        }
-    ]
+      "message": "Lấy lớp học thành công",
+      "status": "Success",
+      "data": [
+          {
+              "ID": "67375642ec72767cfd44630c",
+              "Semester": "HK241",
+              "Name": "L03",
+              "CourseId": "672b86fd226ae67ef9aaa045",
+              "ListStudentMs": null,
+              "TeacherId": "672b85b8226ae67ef9aaa005",
+              "CreatedBy": "6730d78984648a9d5ba4d2ec",
+              "UpdatedBy": "6730d78984648a9d5ba4d2ec"
+          },
+          {
+              "ID": "672b87af226ae67ef9aaa047",
+              "Semester": "HK233",
+              "Name": "L01",
+              "CourseId": "672b86fd226ae67ef9aaa045",
+              "ListStudentMs": [
+                  "2210001",
+                  "2210002"
+              ],
+              "TeacherId": "672b85b8226ae67ef9aaa005",
+              "CreatedBy": "670de16d6fbedac9e3b8d00a",
+              "UpdatedBy": "670de16d6fbedac9e3b8d00a"
+          }
+      ]
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi hệ thống"
   }
-```
+
 ##### c. GetClassByCourseID
 - **Mô tả:** Được sử dụng để lấy thông tin của tất cả lớp học dựa vào id khóa học.
 - **URL:** `/admin/api/class/course/{id}`
@@ -548,60 +547,60 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 - 200 OK:
   ```json
   {
-	"message": "Lấy lớp học thành công",
-    "status": "Success",
-    "data": [
-        {
-            "ID": "6744928c7ac9374bba79314d",
-            "Semester": "HK241",
-            "Name": "L02",
-            "CourseId": "672b86fd226ae67ef9aaa045",
-            "ListStudentMs": [
-                "2210001",
-                "2210002"
-            ],
-            "TeacherId": "672b85b8226ae67ef9aaa005",
-            "CreatedBy": "000000000000000000000000",
-            "UpdatedBy": "000000000000000000000000"
-        },
-        {
-            "ID": "67375815ec72767cfd44630d",
-            "Semester": "HK241",
-            "Name": "L04",
-            "CourseId": "672b86fd226ae67ef9aaa045",
-            "ListStudentMs": [
-                "2210001",
-                "2210002",
-                "2210003"
-            ],
-            "TeacherId": "67307b348e77d2a6ec61b4ee",
-            "CreatedBy": "6730d78984648a9d5ba4d2ec",
-            "UpdatedBy": "6730d78984648a9d5ba4d2ec"
-        }
-    ]
+      "message": "Lấy lớp học thành công",
+      "status": "Success",
+      "data": [
+          {
+              "ID": "6744928c7ac9374bba79314d",
+              "Semester": "HK241",
+              "Name": "L02",
+              "CourseId": "672b86fd226ae67ef9aaa045",
+              "ListStudentMs": [
+                  "2210001",
+                  "2210002"
+              ],
+              "TeacherId": "672b85b8226ae67ef9aaa005",
+              "CreatedBy": "000000000000000000000000",
+              "UpdatedBy": "000000000000000000000000"
+          },
+          {
+              "ID": "67375815ec72767cfd44630d",
+              "Semester": "HK241",
+              "Name": "L04",
+              "CourseId": "672b86fd226ae67ef9aaa045",
+              "ListStudentMs": [
+                  "2210001",
+                  "2210002",
+                  "2210003"
+              ],
+              "TeacherId": "67307b348e77d2a6ec61b4ee",
+              "CreatedBy": "6730d78984648a9d5ba4d2ec",
+              "UpdatedBy": "6730d78984648a9d5ba4d2ec"
+          }
+      ]
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy lớp học"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi hệ thống"
   }
-```
+
 ##### d. GetClassByClassID
 - **Mô tả:** Được sử dụng để lấy thông tin của lớp học theo id.
 - **URL:** `/admin/api/class/{id}`
@@ -616,44 +615,44 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 - 200 OK:
   ```json
   {
-	"message": "Lấy lớp học thành công",
-    "status": "Success",
-    "data": {
-            "ID": "6744928c7ac9374bba79314d",
-            "Semester": "HK241",
-            "Name": "L02",
-            "CourseId": "672b86fd226ae67ef9aaa045",
-            "ListStudentMs": [
-                "2210001",
-                "2210002"
-            ],
-            "TeacherId": "672b85b8226ae67ef9aaa005",
-            "CreatedBy": "000000000000000000000000",
-            "UpdatedBy": "000000000000000000000000"
-        }
+      "message": "Lấy lớp học thành công",
+      "status": "Success",
+      "data": {
+              "ID": "6744928c7ac9374bba79314d",
+              "Semester": "HK241",
+              "Name": "L02",
+              "CourseId": "672b86fd226ae67ef9aaa045",
+              "ListStudentMs": [
+                  "2210001",
+                  "2210002"
+              ],
+              "TeacherId": "672b85b8226ae67ef9aaa005",
+              "CreatedBy": "000000000000000000000000",
+              "UpdatedBy": "000000000000000000000000"
+          }
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy lớp học"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu"
   }
-```
+
 ##### e. DeleteClass
 - **Mô tả:** Được sử dụng để xóa lớp học theo id.
 - **URL:** `/admin/api/class/delete/{id}`
@@ -672,21 +671,21 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Xóa lớp học thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi xóa lớp học"
   }
-```
+
 ##### f. AddStudentToClass
 - **Mô tả:** Được sử dụng để thêm sinh viên vào lớp học.
 - **URL:** `/admin/api/class/add`
@@ -694,33 +693,33 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 - **Xác thực**: Bearer `<token>`
 -  **Request body:**
   ```json
-{
+  {
     "class_id": "67375642ec72767cfd44630c",
     "listStudent_ms": ["1242112", "1231311"]
   }
-```
+
 - **Response:**
 - 200 OK:
   ```json
   {
-    "status": "Success",
-    message: "Thêm học sinh vào lớp học thành công"
- }
-```
+      "status": "Success",
+      "message": "Thêm học sinh vào lớp học thành công"
+  }
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi thêm học sinh vào lớp học"
   }
-```
+
 ##### g. ChangeClassByID
 - **Mô tả:** Được sử dụng để thay đổi dữ liệu của một lớp học.
 - **URL:** `/admin/api/class/change/{id}`
@@ -734,34 +733,34 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 -  **Request body:**
   ```json
   {
-    "semester":       "HK241",
-    "name":           "L15",
-    "course_id":      "672b86fd226ae67ef9aaa045",
-    "teacher_id":     "67307b348e77d2a6ec61b4ee"
-}
-```
+      "semester":       "HK241",
+      "name":           "L15",
+      "course_id":      "672b86fd226ae67ef9aaa045",
+      "teacher_id":     "67307b348e77d2a6ec61b4ee"
+  }
+
 - **Response:**
 - 200 OK:
   ```json
   {
-    "message": "Cập nhật lớp học thành công",
-    "status": "Success"
+        "message": "Cập nhật lớp học thành công",
+        "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
-	"status":    "Fail",
-    "message": "Lỗi hệ thống"
+      "status":    "Fail",
+      "message": "Lỗi hệ thống"
   }
-```
+
 #### 1.4 Course
 ##### a. CreateCourse
 - **Mô tả:** Được sử dụng để tạo khóa học
@@ -771,39 +770,39 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 - **Request body:**
   ```json
   {
-    "name": "Database system",
-    "desc": "Mon nay de 10 diem",
-    "credit": 4,
-    "bt": 10,
-    "tn": 10,
-    "btl": 10,
-    "gk": 20,
-    "ck": 50,
-    "ms": "CO3019"
-}
-```
+      "name": "Database system",
+      "desc": "Mon nay de 10 diem",
+      "credit": 4,
+      "bt": 10,
+      "tn": 10,
+      "btl": 10,
+      "gk": 20,
+      "ck": 50,
+      "ms": "CO3019"
+  }
+
 - **Response:**
 - 200 OK:
   ```json
   {
-    "message": "Tạo khóa học thành công",
-    "status": "Success"
+      "message": "Tạo khóa học thành công",
+      "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
-	"status":    "Fail",
-    "message": "Lỗi khi tạo khóa học"
+      "status":    "Fail",
+      "message": "Lỗi khi tạo khóa học"
   }
-```
+
 ##### b. GetCourseByCourseID
 - **Mô tả:** Được sử dụng để lấy thông tin của khóa học theo id.
 - **URL:** `/admin/api/course/{id}`
@@ -818,47 +817,47 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 - 200 OK: Phần hệ số có giá trị theo thứ tự là bt, tn, btl, gk, ck.
   ```json
   {
-	"message": "Lấy khóa học thành công",
-    "status": "Success",
-    "data": {
-            "ID": "674ac0549d65503d01c2b59e",
-	        "MS": "CO3019",
-	        "Credit": 4,
-	        "Name": "DBS",
-	        "Desc": "Mon nay de 10 diem",
-	        "HS": [
-	            10, 
-	            10, 
-	            10,
-	            20,
-	            50
-	        ],
-	        "CreatedBy": "6749bde782c0c465f12d5d11",
-	        "UpdatedBy": "000000000000000000000000"
-        }
+      "message": "Lấy khóa học thành công",
+      "status": "Success",
+      "data": {
+              "ID": "674ac0549d65503d01c2b59e",
+            "MS": "CO3019",
+            "Credit": 4,
+            "Name": "DBS",
+            "Desc": "Mon nay de 10 diem",
+            "HS": [
+                10, 
+                10, 
+                10,
+                20,
+                50
+            ],
+            "CreatedBy": "6749bde782c0c465f12d5d11",
+            "UpdatedBy": "000000000000000000000000"
+          }
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy khóa học"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi lấy khóa học"
   }
-```
+
 ##### c. GetAllCourse
 - **Mô tả:** Được sử dụng để lấy thông tin của tất cả khóa học 
 - **URL:** `/admin/api/course/all`
@@ -868,56 +867,56 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 - 200 OK: Phần hệ số có giá trị theo thứ tự là bt, tn, btl, gk, ck.
   ```json
   {
-	"message": "Lấy ra tất cả khóa học thành công",
-    "status": "Success",
-    "semester": {
-        "CURRENT": "HK241",
-        "NEXT": "HK242",
-	    "PREV": "HK233"
-    },
-    "data": [
-	        {
-	            "ID": "672b86fd226ae67ef9aaa045",
-	            "MS": "CO3103",
-	            "Credit": 1,
-	            "Name": "Đồ án công nghệ phần mềm",
-	            "Desc": "Giúp bạn có 1 kiến thức thú dị :)))",
-	            "HS": [
-	                10,
-	                20,
-	                0,
-	                20,
-	                50
-	            ],
-	            "CreatedBy": "670de16d6fbedac9e3b8d00a",
-	            "UpdatedBy": "000000000000000000000000"
-	        },
-	        {
-	            "ID": "6730cf4ee13cf54ebe00f3cf",
-	            "MS": "CO3102",
-	            "Credit": 4,
-	            "Name": "cấu trúc dữ liệu và ảo thuật",
-	            "Desc": "DSA dễ ẹc à",
-	            "HS": [
-	                10,
-	                20,
-	                0,
-	                20,
-	                50
-	            ],
-	            "CreatedBy": "672b865f226ae67ef9aaa044",
-	            "UpdatedBy": "000000000000000000000000"
-	        }
-        ]
+    "message": "Lấy ra tất cả khóa học thành công",
+      "status": "Success",
+      "semester": {
+          "CURRENT": "HK241",
+          "NEXT": "HK242",
+        "PREV": "HK233"
+      },
+      "data": [
+            {
+                "ID": "672b86fd226ae67ef9aaa045",
+                "MS": "CO3103",
+                "Credit": 1,
+                "Name": "Đồ án công nghệ phần mềm",
+                "Desc": "Giúp bạn có 1 kiến thức thú dị :)))",
+                "HS": [
+                    10,
+                    20,
+                    0,
+                    20,
+                    50
+                ],
+                "CreatedBy": "670de16d6fbedac9e3b8d00a",
+                "UpdatedBy": "000000000000000000000000"
+            },
+            {
+                "ID": "6730cf4ee13cf54ebe00f3cf",
+                "MS": "CO3102",
+                "Credit": 4,
+                "Name": "cấu trúc dữ liệu và ảo thuật",
+                "Desc": "DSA dễ ẹc à",
+                "HS": [
+                    10,
+                    20,
+                    0,
+                    20,
+                    50
+                ],
+                "CreatedBy": "672b865f226ae67ef9aaa044",
+                "UpdatedBy": "000000000000000000000000"
+            }
+          ]
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi lấy dữ liệu"
   }
-```
+
 ##### d. DeleteCourseByID
 - **Mô tả:** Được sử dụng để xóa khóa học theo id
 - **URL:** `/admin/api/course/delete/{id}`
@@ -936,21 +935,21 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Xóa khóa học thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi xóa khóa học"
   }
-```
+
 ##### e. ChangeCourseByID
 - **Mô tả:** Được sử dụng để thay đổi thông tin khóa học theo id
 - **URL:** `/admin/api/course/change/{id}`
@@ -964,34 +963,34 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 -  **Request body:**
   ```json
   {
-    "ms": "CO3001",
-    "credit": 3,
-    "name": "Cong nghe phan mem",
-    "desc": "Mon nay lay 10 diem"
-}
-```
+      "ms": "CO3001",
+      "credit": 3,
+      "name": "Cong nghe phan mem",
+      "desc": "Mon nay lay 10 diem"
+  }
+
 - **Response:**
 - 200 OK:
   ```json
   {
-    "message": "Cập nhật khóa học thành công",
-    "status": "Success"
+      "message": "Cập nhật khóa học thành công",
+      "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
-	"status":    "Fail",
-    "message": "Lỗi khi cập nhật khóa học"
+      "status":    "Fail",
+      "message": "Lỗi khi cập nhật khóa học"
   }
-```
+
 #### 1.5 Result
 ##### a. CreateResult
 - **Mô tả:** Được sử dụng để cập nhật hoặc tạo bảng điểm cho lớp học.
@@ -1000,61 +999,61 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 - **Xác thực**: Bearer `<token>`
 - **Request body:**
   ```json
-{
-    "score": [
-        {
-            "MMSV": "2215555",
-            "Data": {
-                "BT": [8.5, 9.0, 7.5],
-                "TN": [7.0, 6.5, 8.0],
-                "BTL": [8.0, 7.5],
-                "GK": 7.5,
-                "CK": 8.0
-            }
-        },
-        {
-            "MMSV": "2212372",
-            "Data": {
-                "BT": [9.0, 9.5, 8.5],
-                "TN": [8.0, 7.5, 9.0],
-                "BTL": [8.5, 9.0],
-                "GK": 8.0,
-                "CK": 8.5
-            }
-        }
-    ],
-    "class_id": "6732e83c95f2243e7eeb497e"
+  {
+      "score": [
+          {
+              "MMSV": "2215555",
+              "Data": {
+                  "BT": [8.5, 9.0, 7.5],
+                  "TN": [7.0, 6.5, 8.0],
+                  "BTL": [8.0, 7.5],
+                  "GK": 7.5,
+                  "CK": 8.0
+              }
+          },
+          {
+              "MMSV": "2212372",
+              "Data": {
+                  "BT": [9.0, 9.5, 8.5],
+                  "TN": [8.0, 7.5, 9.0],
+                  "BTL": [8.5, 9.0],
+                  "GK": 8.0,
+                  "CK": 8.5
+              }
+          }
+      ],
+      "class_id": "6732e83c95f2243e7eeb497e"
   }
-```
+
 - **Response:**
 - 200 OK:
   ```json
   {
-    "message": "Cập nhật bảng điểm thành công",
-    "status": "Success"
+      "message": "Cập nhật bảng điểm thành công",
+      "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy bảng điểm"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
-	"status":    "Fail",
-    "message": "Cập nhật bảng điểm thât bại"
+      "status":    "Fail",
+      "message": "Cập nhật bảng điểm thât bại"
   }
-```
+
 ##### b. GetResultByClassID
 - **Mô tả:** Được sử dụng để lấy thông tin điểm theo id lớp học
 - **URL:** `/admin/api/result/{id}`
@@ -1104,28 +1103,28 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
         "UpdatedBy": "672b865f226ae67ef9aaa044"
     }
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy bảng điểm"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
-	"status":    "Fail",
-    "message": "Lỗi khi lấy bảng điểm"
+      "status":    "Fail",
+      "message": "Lỗi khi lấy bảng điểm"
   }
-```
+
 #### 1.6 HOF
 ##### a. UpdateHallOfFameForPrevSemester
 - **Mô tả:** Được sử dụng để cập nhật Hall Of Fame cho kì vừa rồi.
@@ -1139,21 +1138,21 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Cập nhật Hall Of Fame thành công",
     "status": "Success",
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không có bản ghi nào"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
-	"status":    "Fail",
-    "message": "Lỗi khi tính điểm trung bình"
+      "status":    "Fail",
+      "message": "Lỗi khi tính điểm trung bình"
   }
-```
+
 ##### b. getAllHallOfFame
 - **Mô tả:** Được sử dụng để đăng nhập cho admin
 - **URL:** `/admin/api/HOF/all`
@@ -1201,21 +1200,21 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
         ]
     }
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy dữ liệu cho học kỳ trước"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
-	"status":    "Fail",
-    "message": "Đã xảy ra lỗi khi truy vấn dữ liệu"
+      "status":    "Fail",
+      "message": "Đã xảy ra lỗi khi truy vấn dữ liệu"
   }
-```
+
 ### 2. Client
 #### 2.1 Student
 #### 2.1.1 Index (Những hoạt động liên quan tới Student)
@@ -1229,7 +1228,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "idToken": "",
     "role": "student"
   }
-```
+
 - **Response:**
 - 200 OK:
   ```json
@@ -1238,35 +1237,35 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "token": "",
     "role": "student"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Token không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Tài khoản không tồn tại"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi lấy dữ liệu từ server database."
   }
-  ```
+
 ##### b. Logout
 - **Mô tả:** Được sử dụng để đăng xuất cho sinh viên
 - **URL:** `/api/logout`
@@ -1279,14 +1278,14 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "status": "Success",
     "message": "Đăng xuất thành công"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Token không hợp lệ"
   }
-```
+
 ##### c. Account
 - **Mô tả:** Được sử dụng để lấy thông tin của sinh viên đang đăng nhập
 - **URL:** `/api/info`
@@ -1308,14 +1307,14 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 	        "CreatedBy": "6749bde782c0c465f12d5d11",
 	        "ExpiredAt": "2029-11-29T14:29:46.037Z"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Yêu cầu đăng nhập"
   }
-```
+
 ##### d. GetTeacherByID
 - **Mô tả:** Được sử dụng để lấy tên và email của giảng viên.
 - **URL:** `/api/{id}`
@@ -1338,28 +1337,28 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy giảng viên"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi truy vấn dữ liệu"
   }
-```
+
 #### 2.1.2 Class
 ##### a. GetAllClassJoined
 - **Mô tả:** Được sử dụng để lấy thông tin của tất cả lớp học mà sinh viên đăng đăng nhập tham gia
@@ -1388,21 +1387,21 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     ],
     "status": "Success"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Sinh viên không tham gia lớp học nào"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi tìm lớp học"
   }
-```
+
 ##### b. GetClassDetailByID
 - **Mô tả:** Được sử dụng để lấy thông tin của lớp học dựa trên id lớp học
 - **URL:** `/api/class/{id}`
@@ -1435,35 +1434,35 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Lấy lớp học thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Chỉ sinh viên mới được phép truy cập"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy lớp học"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi truy vấn dữ liệu"
   }
-```
+
 #### 2.1.3 Course
 ##### a. GetCourseByID
 - **Mô tả:** Được sử dụng để lấy thông tin khóa học
@@ -1498,28 +1497,28 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Lấy khóa học thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy khóa học"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi lấy khóa học"
   }
-```
+
 #### 2.1.4 result
 ##### a. GetCourseResult
 - **Mô tả:** Được sử dụng để lấy thông tin điểm của môn học tại một kì xác định
@@ -1537,30 +1536,30 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
   ```json
   {
     "data": {
-		BT: [9, 10],
-		TN: [8, 9],
-		BTL: [10],
-		GK: 10,
-		CK: 10
+		"BT": [9, 10],
+		"TN": [8, 9],
+		"BTL": [10],
+		"GK": 10,
+		"CK": 10
     },
     "message": "Lấy điểm thành công",
     "status": "Success"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy bảng điểm"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi truy vấn dữ liệu"
   }
-```
+
 ##### b. GetAllResult
 - **Mô tả:** Được sử dụng để lấy tất cả bảng điểm của tất cả môn học
 - **URL:** `/api/result/getmark`
@@ -1572,37 +1571,37 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
   {
     "data": [
 	    {
-		    ms: "CO3001-HK241"
-		    data:{
-				BT: [9, 10],
-				TN: [8, 9],
-				BTL: [10],
-				GK: 10,
-				CK: 10
+		    "ms": "CO3001-HK241",
+		    "data":{
+				"BT": [9, 10],
+				"TN": [8, 9],
+				"BTL": [10],
+				"GK": 10,
+				"CK": 10
 		    }
 	    },
 	    {
-		    ms: "CO3005-HK241"
-		    data:{
-				BT: [9, 10],
-				TN: [8, 9],
-				BTL: [10],
-				GK: 10,
-				CK: 10
+		    "ms": "CO3005-HK241",
+		    "data":{
+				"BT": [9, 10],
+				"TN": [8, 9],
+				"BTL": [10],
+				"GK": 10,
+				"CK": 10
 		    }
 	    }
     ],
     "message": "Lấy điểm thành công",
     "status": "Success"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi truy vấn dữ liệu"
   }
-```
+
 #### 2.1.5 HOF
 ##### a. GetAllHallOfFame
 - **Mô tả:** Được sử dụng để lấy thông tin của hall of fame
@@ -1651,21 +1650,21 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
         ]
     }
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy dữ liệu cho học kỳ trước"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
-	"status":    "Fail",
-    "message": "Đã xảy ra lỗi khi truy vấn dữ liệu"
+      "status":    "Fail",
+      "message": "Đã xảy ra lỗi khi truy vấn dữ liệu"
   }
-```
+
 #### 2.2 Teacher
 #### 2.2.1 Index (thông tin của teacher)
 ##### a. Login
@@ -1678,7 +1677,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "idToken": "",
     "role": "teacher"
   }
-```
+
 - **Response:**
 - 200 OK:
   ```json
@@ -1687,35 +1686,35 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "token": "",
     "role": "teacher"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Token không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Tài khoản không tồn tại"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi lấy dữ liệu từ server database."
   }
-  ```
+
 ##### b. Logout
 - **URL:** `/api/logout`
 - **Mô tả:** Được sử dụng để đăng xuất cho giảng viên
@@ -1728,14 +1727,14 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "status": "Success",
     "message": "Đăng xuất thành công"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Token không hợp lệ"
   }
-```
+
 ##### c. GetAccountInfo
 - **Mô tả:** Được sử dụng để lấy thông tin của giảng viên đang đăng nhập
 - **URL:** `/api/info`
@@ -1757,14 +1756,14 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 	        "CreatedBy": "6749bde782c0c465f12d5d11",
 	        "ExpiredAt": "2029-11-30T08:11:03.907Z"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Yêu cầu đăng nhập"
   }
-```
+
 #### 2.2.2 Class 
 ##### a. GetAllClassManaged
 - **Mô tả:** Được sử dụng để lấy thông tin của lớp học mà giảng viên đang quản lý. 
@@ -1806,28 +1805,28 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     ],
     "status": "Success"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Chỉ giáo viên mới được phép truy cập"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Giảng viên không quản lý lớp học nào"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi tìm lớp học"
   }
-```
+
 ##### b. GetClassDetailByID
 - **Mô tả:** Được sử dụng để lấy thông tin của class dựa trên id dành cho giảng viên
 - **URL:** `/api/class/{id}`
@@ -1859,35 +1858,35 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Lấy lớp học thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Chỉ giáo viên mới được phép truy cập"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy lớp học"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi truy vấn dữ liệu"
   }
-```
+
 #### 2.2.3 course
 ##### a. GetCourseByID
 - **Mô tả:** Được sử dụng để lấy thông tin của course dựa trên id
@@ -1922,28 +1921,28 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Lấy khóa học thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy khóa học"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi lấy khóa học"
   }
-```
+
 #### 2.2.4 result
 ##### a. CreateResultForClassByClassId 
 - **Mô tả:** Được sử dụng để tạo bảng điểm cho lớp học theo id lớp học.
@@ -1976,7 +1975,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     ],
     "class_id": "6732e83c95f2243e7eeb497e"
   }
-```
+
 - **Response:**
 - 200 OK:
   ```json
@@ -1984,35 +1983,35 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Tạo bảng điểm thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Chỉ giáo viên mới được phép truy cập"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy lớp học"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi truy vấn dữ liệu"
   }
-```
+
 ##### b. GetResultByClassId
 - **Mô tả:** Được sử dụng để lấy thông tin điểm của tất cả sinh viên trong lớp học
 - **URL:** `/api/result/{id}`
@@ -2082,28 +2081,28 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     },
     "status": "Success"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy bảng điểm"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Chỉ giảng viên mới được phép truy cập"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi truy vấn dữ liệu"
   }
-```
+
 ##### c. ChangeResultForClassByClassId
 - **Mô tả:** Được sử dụng để cập nhật điểm cho một lớp học
 - **URL:** `/api/result/change`
@@ -2136,7 +2135,6 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     ],
     "class_id": "6732e83c95f2243e7eeb497e"
   }
-```
 
 - **Response:**
 - 200 OK:
@@ -2145,35 +2143,35 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "message": "Thay đổi thành công",
     "status": "Success"
   }
-```
+
 - 400 Bad Request:
   ```json
   {
     "status": "Fail",
     "message": "Dữ liệu yêu cầu không hợp lệ"
   }
-```
+
 - 401 Unauthorized:
   ```json
   {
     "status": "Fail",
     "message": "Chỉ giảng viên mới được phép truy cập"
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy khóa học"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
     "status": "Fail",
     "message": "Lỗi khi lấy khóa học"
   }
-```
+
 #### 2.2.5 HOF
 ##### a. GetAllHallOfFame
 - **Mô tả:** Được sử dụng để lấy hall of fame
@@ -2222,18 +2220,17 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
         ]
     }
   }
-```
+
 - 404 Not Found:
   ```json
   {
     "status": "Fail",
     "message": "Không tìm thấy dữ liệu cho học kỳ trước"
   }
-```
+
 - 500 Internal Server Error:
   ```json
   {
-	"status":    "Fail",
-    "message": "Đã xảy ra lỗi khi truy vấn dữ liệu"
+      "status":    "Fail",
+      "message": "Đã xảy ra lỗi khi truy vấn dữ liệu"
   }
-```
