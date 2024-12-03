@@ -80,10 +80,10 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 -  **Request body:**
   ```json
   {
-    "email": "" ,
-    "name" :  "" ,  
-    "faculty": ""  , 
-    "ms":      "" 
+    "email": "test@hcmut.edu.vn" ,
+    "name" :  "admin2" ,  
+    "faculty": "KHMT"  , 
+    "ms":      "2222222" 
   }
 
 - **Response:**
