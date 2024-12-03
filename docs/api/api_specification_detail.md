@@ -699,7 +699,6 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "listStudent_ms": ["1242112", "1231311"]
   }
 ```
-- **:**
 - 200 OK:
   ```json
   {
