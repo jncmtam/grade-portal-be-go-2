@@ -115,7 +115,7 @@ func CheckStudentOrTeacher(c *gin.Context, id string, mssv *string) bool { // St
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":    "Fail",
-			"message": "Lỗi định dạng dữ liệu"})
+			"message": "Dữ liệu yêu cầu không hợp lệ"})
 		return false // Xử lý lỗi và trả về false
 	}
 
@@ -199,7 +199,7 @@ func HandleGetClassByID(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"status":  "Fail",
-			"message": "ID không hợp lệ",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -237,16 +237,22 @@ func HandleGetClassesByCourseID(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"status":  "Fail",
-			"message": "ID không hợp lệ",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
 	collection := models.ClassModel()
 	cursor, err := collection.Find(context.TODO(), bson.M{"course_id": courseID})
 	if err != nil {
-		c.JSON(400, gin.H{
+		if err == mongo.ErrNoDocuments{
+			c.JSON(404, gin.H{
+        "status":  "Fail",
+        "message": "Không tìm thấy lớp học",
+      })
+		}
+		c.JSON(500, gin.H{
 			"status":  "Fail",
-			"message": "Không tìm thấy lớp học",
+			"message": "Lỗi hệ thống",
 		})
 		return
 	}
@@ -281,7 +287,7 @@ func HandleAddStudentsToClass(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"status":    "Fail",
-			"message": "ID lớp học không hợp lệ",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -315,7 +321,7 @@ func HandleUpdateClass(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"status":    "Fail",
-			"message": "ID không hợp lệ",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -323,7 +329,7 @@ func HandleUpdateClass(c *gin.Context) {
 	if err := c.BindJSON(&data); err != nil {
 		c.JSON(400, gin.H{
 			"status":    "Fail",
-			"message": "Dữ liệu không hợp lệ",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -422,7 +428,7 @@ func HandleDeleteClass(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"status":    "Fail",
-			"message": "ID không hợp lệ",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}

@@ -25,7 +25,7 @@ func HandleRequireAuth(c *gin.Context) {
     } else {
         c.JSON(401, gin.H{
             "status": "Fail",
-            "message": "Header Authorization không hợp lệ"})
+            "message": "Token không hợp lệ"})
         c.Abort()
         return
     }

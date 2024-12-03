@@ -90,7 +90,7 @@ func HandleGetAccountByID(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"status":    "Fail",
-			"message": "accountID không đúng định dạng.",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -102,18 +102,18 @@ func HandleGetAccountByID(c *gin.Context) {
 		if err == mongo.ErrNoDocuments {
 			c.JSON(404, gin.H{
 				"status":    "Fail",
-				"message": "Không tìm thấy tài khoản."})
+				"message": "Không tìm thấy tài khoản"})
 			return
 		}
 		c.JSON(500, gin.H{
 				"status":    "Fail",
-				"message": "Lỗi khi lấy tài khoản từ cơ sở dữ liệu."})
+				"message": "Lỗi khi lấy tài khoản từ cơ sở dữ liệu"})
 		return
 	}
 
 	c.JSON(200, gin.H{
 		"status":    "Success",
-		"message": "Tìm tài khoản thành công.",
+		"message": "Tìm tài khoản thành công",
 		"data": account,
 	})
 }
@@ -131,14 +131,14 @@ func HandleGetTeacherAccounts(c *gin.Context) {
 			if err == mongo.ErrNoDocuments {
 				c.JSON(404, gin.H{
 					"status":    "Fail",
-					"message": "Không có tài khoản nào trong cơ sở dữ liệu.",
+					"message": "Không có tài khoản nào trong cơ sở dữ liệu",
 				})
 				return
 			}
 			// Lấy dữ liệu bị lỗi
 			c.JSON(500, gin.H{
 				"status":    "Fail",
-				"message": "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu.",})
+				"message": "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu",})
 			return
 		}
 		// giải mã từ con trỏ sang kết quả
@@ -201,7 +201,7 @@ func HandleGetStudentAccounts(c *gin.Context) {
 			//Lấy dữ liệu bị lỗi
 			c.JSON(500, gin.H{
 				"status":    "Fail",
-				"message": "Lỗi khi lấy tài khoản"})
+				"message": "Lỗi khi lấy dữ liệu từ cơ sở dữ liệu"})
 			return
 		}
 		//Giải mã từ con trỏ sang kết quả
@@ -214,7 +214,7 @@ func HandleGetStudentAccounts(c *gin.Context) {
 		//Trả kết quả về
 		c.JSON(200, gin.H{
 			"status":    "Success",
-			"message":      "Tìm thấy tài khoản thành công",
+			"message":      "Tìm tài khoản thành công",
 			"data": students,
 		})
 	} else {
@@ -250,7 +250,7 @@ func HandleDeleteAccount(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"status":    "Fail",
-			"message": "ID không đúng định dạng",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -258,7 +258,7 @@ func HandleDeleteAccount(c *gin.Context) {
 	accountCollection := models.AccountModel()
 	_ , err = accountCollection.DeleteOne(context.TODO(), bson.M{"_id": accountID})
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(500, gin.H{
 			"status":    "Fail",
 			"message": "Lỗi khi xóa tài khoản",
 		})
@@ -279,7 +279,7 @@ func HandleUpdateAccount(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"status":    "Fail",
-			"message": "ID không đúng định dạng",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
