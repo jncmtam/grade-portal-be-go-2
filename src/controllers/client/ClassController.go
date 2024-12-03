@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // HandleTeacherClasses xử lý việc lấy danh sách lớp học của giáo viên.
@@ -27,7 +28,14 @@ func HandleTeacherClasses(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(401, gin.H{
+		if err == mongo.ErrNoDocuments{
+			c.JSON(404, gin.H{
+        "status":  "Fail",
+        "message": "Giảng viên không quản lý lớp học nào",
+      })
+      return
+		}
+		c.JSON(500, gin.H{
 			"status":    "Fail",
 			"message": "Lỗi khi tìm lớp học",
 		})
@@ -35,7 +43,7 @@ func HandleTeacherClasses(c *gin.Context) {
 	}
 	defer cursor.Close(context.TODO())
 	if err := cursor.All(context.TODO(), &classTeacherAll); err != nil {
-		c.JSON(401, gin.H{
+		c.JSON(500, gin.H{
 			"status":    "Fail",
 			"message": "Lỗi khi đọc dữ liệu lớp học",
 		})
@@ -58,7 +66,14 @@ func HandleStudentClasses(c *gin.Context) {
 		"listStudent_ms": user.Ms,
 	})
 	if err != nil {
-		c.JSON(401, gin.H{
+		if err == mongo.ErrNoDocuments{
+			c.JSON(404, gin.H{
+        "status":  "Fail",
+        "message": "Sinh viên không tham gia lớp học nào",
+      })
+      return
+		}
+		c.JSON(500, gin.H{
 			"status":    "Fail",
 			"message": "Lỗi khi tìm lớp học",
 		})
@@ -66,7 +81,7 @@ func HandleStudentClasses(c *gin.Context) {
 	}
 	defer cursor.Close(context.TODO())
 	if err := cursor.All(context.TODO(), &classStudentAll); err != nil {
-		c.JSON(401, gin.H{
+		c.JSON(500, gin.H{
 			"status":    "Fail",
 			"message": "Lỗi khi đọc dữ liệu lớp học",
 		})
@@ -98,18 +113,32 @@ func HandleUserClasses(c *gin.Context) {
 // HandleClassDetail xử lý việc lấy chi tiết lớp học.
 func HandleClassDetail(c *gin.Context) {
 	paramID := c.Param("id")
-	id, _ := bson.ObjectIDFromHex(paramID)
+	id, err := bson.ObjectIDFromHex(paramID)
+	if err != nil {
+		c.JSON(400, gin.H{
+      "status":  "Fail",
+      "message": "Dữ liệu yêu cầu không hợp lệ",
+    })
+    return
+	}
 	data, _ := c.Get("user")
 	user := data.(models.InterfaceAccount)
 	var classDetail models.InterfaceClass
 	collection := models.ClassModel()
-	err := collection.FindOne(context.TODO(), bson.M{
+	err = collection.FindOne(context.TODO(), bson.M{
 		"_id": id,
 	}).Decode(&classDetail)
 	if err != nil {
-		c.JSON(400, gin.H{
+		if err == mongo.ErrNoDocuments {
+			c.JSON(404, gin.H{
+        "status":  "Fail",
+        "message": "Không tìm thấy lớp học",
+      })
+      return
+		}
+		c.JSON(500, gin.H{
 			"status":    "Fail",
-			"message": "Không tìm thấy lớp học",
+			"message": "Lỗi khi tìm lớp học",
 		})
 		return
 	}

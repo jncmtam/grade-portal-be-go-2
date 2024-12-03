@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // HandleCreateResult dùng để tạo hoặc cập nhật bảng điểm.
@@ -17,7 +18,7 @@ func HandleCreateResult(c *gin.Context) {
 	if err := c.BindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":    "Fail",
-			"message": "Dữ liệu không hợp lệ",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -32,11 +33,19 @@ func HandleCreateResult(c *gin.Context) {
 	}
 	// Kiểm tra lớp học có tồn tại không
 	var classDetail models.InterfaceClass
-	collectionClass := models.ClassModel()
-	if err = collectionClass.FindOne(context.TODO(), bson.M{"_id": classID}).Decode(&classDetail); err != nil {
+	collectionClass := models.ClassModel();
+	err = collectionClass.FindOne(context.TODO(), bson.M{"_id": classID}).Decode(&classDetail);
+	if  err != nil {
+		if err == mongo.ErrNoDocuments {
+			c.JSON(404, gin.H{
+        "status":  "Fail",
+        "message": "Không tìm thấy l��p học",
+      })
+      return
+		}
 		c.JSON(500, gin.H{
 			"status":    "Fail",
-			"message": "Không tìm thấy lớp học đó",
+			"message": "Lỗi khi lấy lớp học",
 		})
 		return
 	}
@@ -54,7 +63,7 @@ func HandleCreateResult(c *gin.Context) {
 		if err != nil {
 			c.JSON(500, gin.H{
 				"status":    "Fail",
-				"message": "Cập nhật bảng điểm thât bại!.",
+				"message": "Cập nhật bảng điểm thât bại",
 			})
 			return
 		}
@@ -88,17 +97,25 @@ func HandleGetResult(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status":    "Fail",
-			"message": "Mã lớp học không đúng định dạng.",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
 	//Kiểm tra bảng điểm có tồn tại hay không
 	collection := models.ResultScoreModel()
 	var data models.InterfaceResult
-	if err = collection.FindOne(context.TODO(), bson.M{"class_id": classID}).Decode(&data); err != nil {
+	err = collection.FindOne(context.TODO(), bson.M{"class_id": classID}).Decode(&data)
+	if err != nil {
+		if err == mongo.ErrNoDocuments{
+			c.JSON(404, gin.H{
+        "status":    "Fail",
+        "message": "Không tìm thấy bảng điểm",
+      })
+      return
+		}
 		c.JSON(500, gin.H{
 			"status":    "Fail",
-			"message": "Không tìm thấy bảng điểm.",
+			"message": "Lỗi khi lấy bảng điểm",
 		})
 		return
 	}

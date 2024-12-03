@@ -109,7 +109,7 @@ func HandleCreateResult(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"status":    "Success",
-		"message": "Cập nhật bảng điểm thành công",
+		"message": "Tạo bảng điểm thành công",
 	})
 }
 
@@ -119,7 +119,14 @@ func HandlePatchResult(c *gin.Context) {
 	user := data.(models.InterfaceAccount)
 	var dataResult InterfaceResultScoreController
 	c.BindJSON(&dataResult)
-	classID, _ := bson.ObjectIDFromHex(dataResult.ClassID)
+	classID, err := bson.ObjectIDFromHex(dataResult.ClassID)
+	if err!= nil {
+		c.JSON(400, gin.H{
+      "status":    "Fail",
+      "message": "Dữ liệu yêu cầu không hợp lệ",
+    })
+    return
+	}
 	collection := models.ResultScoreModel()
 
 	// Cập nhật kết quả điểm
@@ -163,10 +170,18 @@ func HandleCourseResult(c *gin.Context) {
 	collectionCourse := models.CourseModel()
 
 	// Tìm kiếm khóa học theo mã số
-	if err := collectionCourse.FindOne(context.TODO(), bson.M{"ms": params[0]}).Decode(&course); err != nil {
-		c.JSON(400, gin.H{
+	err := collectionCourse.FindOne(context.TODO(), bson.M{"ms": params[0]}).Decode(&course)
+	if ; err != nil {
+		if err == mongo.ErrNoDocuments{
+			c.JSON(404, gin.H{
+        "status":    "Fail",
+        "message": "Không tìm thấy khóa học",
+      })
+      return
+		}
+		c.JSON(500, gin.H{
 			"status":    "Fail",
-			"message": "MS course sai",
+			"message": "Lỗi khi truy vấn dữ liệu",
 		})
 		return
 	}
@@ -175,18 +190,18 @@ func HandleCourseResult(c *gin.Context) {
 	collectionResult := models.ResultScoreModel()
 
 	// Tìm kiếm kết quả điểm theo course_id và học kỳ
-	err := collectionResult.FindOne(context.TODO(), bson.M{"course_id": course.ID, "semester": params[1]}).Decode(&result);
+	err = collectionResult.FindOne(context.TODO(), bson.M{"course_id": course.ID, "semester": params[1]}).Decode(&result);
 	if err != nil {
 		if err == mongo.ErrNoDocuments{
-			c.JSON(200, gin.H{
-				"status":    "Success",
+			c.JSON(404, gin.H{
+				"status":    "Fail",
 				"message": "Không có bảng điểm",
 			})
 			return
 		}
-		c.JSON(400, gin.H{
+		c.JSON(500, gin.H{
 			"status":    "Fail",
-			"message": "ID course sai",
+			"message": "Lỗi khi truy vấn dữ liệu",
 		})
 		return
 	}
@@ -221,7 +236,7 @@ func HandleAllResults(c *gin.Context) {
 	if err != nil {
 		c.JSON(500, gin.H{
 			"status":    "Fail",
-			"message": "Lỗi server",
+			"message": "Lỗi khi truy vấn dữ liệu",
 		})
 		return
 	}
@@ -230,7 +245,7 @@ func HandleAllResults(c *gin.Context) {
 	if err := cursor.All(context.TODO(), &result); err != nil {
 		c.JSON(500, gin.H{
 			"status":    "Fail",
-			"message": "Lỗi server",
+			"message": "Lỗi khi giải mã dữ liệu",
 		})
 		return
 	}

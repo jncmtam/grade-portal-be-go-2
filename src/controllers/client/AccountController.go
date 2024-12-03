@@ -9,6 +9,7 @@ import (
 	"cloud.google.com/go/auth/credentials/idtoken"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // HandleLogin xử lý việc đăng nhập.
@@ -70,12 +71,13 @@ func HandleAccount(c *gin.Context) {
 	if user == "" {
 		c.JSON(401, gin.H{
 			"status":    "Fail",
-			"message": "Không có người dùng",
+			"message": "Yêu cầu đăng nhập",
 		})
 		return
 	}
 	c.JSON(200, gin.H{
-		"status": "success",
+		"status": "Success",
+		"message": "Thành công",
 		"data": user,
 	})
 }
@@ -87,7 +89,7 @@ func HandleGetInfoByID(c *gin.Context) {
 	if err != nil {
 		c.JSON(400, gin.H{
 			"status":    "Fail",
-			"message": "Teacher ID sai",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -98,9 +100,16 @@ func HandleGetInfoByID(c *gin.Context) {
 	}
 	err = collection.FindOne(context.TODO(), bson.M{"_id": teacherID, "role": "teacher"}).Decode(&teacher)
 	if err != nil {
-		c.JSON(400, gin.H{
+		if err == mongo.ErrNoDocuments {
+			c.JSON(404, gin.H{
+        "status":    "Fail",
+        "message": "Không tìm thấy giảng viên",
+      })
+      return
+		}
+		c.JSON(500, gin.H{
 			"status":    "Fail",
-			"message": "Teacher ID sai",
+			"message": "Lỗi khi truy vấn dữ liệu",
 		})
 		return
 	}

@@ -117,7 +117,14 @@ func HandleCreateHallOfFame(c *gin.Context) {
 		"semester": semester.PREV,
 	})
 	if err != nil {
-		c.JSON(400, gin.H{
+		if err == mongo.ErrNoDocuments {
+			c.JSON(404, gin.H{
+        "status":  "Fail",
+        "message": "Không có bản ghi nào",
+      })
+      return
+		}
+		c.JSON(500, gin.H{
 			"status":    "Fail",
 			"message": "Lỗi tìm kiếm bản ghi",
 		})
@@ -125,9 +132,9 @@ func HandleCreateHallOfFame(c *gin.Context) {
 	}
 	defer cursor.Close(context.TODO())
 	if err = cursor.All(context.TODO(), &results); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(500, gin.H{
 			"status":    "Fail",
-			"message": "Lỗi tìm kiếm bản ghi",
+			"message": "Lỗi giải mã bản ghi",
 		})
 		return
 	}
@@ -139,9 +146,9 @@ func HandleCreateHallOfFame(c *gin.Context) {
 			processed[key] = true
 			avgStudentScores, err := CalculateAvgStudentScores(result.Semester, result.CourseID)
 			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{
+				c.JSON(500, gin.H{
 					"status":    "Fail",
-					"message": err.Error(),
+					"message": "Lỗi khi tính điểm trung bình",
 				})
 				return
 			}
