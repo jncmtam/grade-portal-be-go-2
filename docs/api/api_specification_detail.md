@@ -79,13 +79,13 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 - **Xác thực**: Bearer `<token>`
 -  **Request body:**
   ```json
-  {
+{
     "email": "test@hcmut.edu.vn" ,
     "name" :  "admin2" ,  
     "faculty": "KHMT"  , 
     "ms":      "2222222" 
-  }
-
+}
+```
 - **Response:**
 - 200 OK:
   ```json
@@ -172,7 +172,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
 	    "role": "student"
 	  }
   ]
-
+```
 - **Response:**
 - 200 OK:
   ```json
@@ -409,7 +409,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
       "faculty": "KTHH",
       "role": "teacher"
   }
-
+```
 - **Response:**
 - 200 OK:
   ```json
@@ -453,6 +453,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     ],
     "teacher_id":     "672b85b8226ae67ef9aaa006"
   }
+```
 - **Response:**
 - 200 OK:
   ```json
@@ -697,8 +698,8 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
     "class_id": "67375642ec72767cfd44630c",
     "listStudent_ms": ["1242112", "1231311"]
   }
-
-- **Response:**
+```
+- **:**
 - 200 OK:
   ```json
   {
@@ -738,7 +739,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
       "course_id":      "672b86fd226ae67ef9aaa045",
       "teacher_id":     "67307b348e77d2a6ec61b4ee"
   }
-
+```
 - **Response:**
 - 200 OK:
   ```json
@@ -780,7 +781,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
       "ck": 50,
       "ms": "CO3019"
   }
-
+  
 - **Response:**
 - 200 OK:
   ```json
@@ -968,7 +969,7 @@ API này sử dụng cơ chế xác thực Bearer Token. Mọi yêu cầu đến
       "name": "Cong nghe phan mem",
       "desc": "Mon nay lay 10 diem"
   }
-
+```
 - **Response:**
 - 200 OK:
   ```json
