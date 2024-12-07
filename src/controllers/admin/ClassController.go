@@ -95,7 +95,6 @@ func CheckDuplicateClass(collection *mongo.Collection, semester string, courseID
 		"semester":  semester,
 		"course_id": courseID,
 		"name":      name,
-		"teacher_id": teacherID,
 	}).Decode(&result)
 	if err == mongo.ErrNoDocuments {
 		return false, nil // Không tìm thấy bản ghi
@@ -382,25 +381,45 @@ func HandleUpdateClass(c *gin.Context) {
 	}
 	
 	collection := models.ClassModel()
-	
+	var class models.InterfaceClass
+
+	if err := collection.FindOne(context.TODO(), bson.M{"_id": classID}).Decode(&class); err != nil {
+		if err == mongo.ErrNoDocuments {
+      c.JSON(404, gin.H{
+        "status":    "Fail",
+        "message": "Không tìm thấy lớp học",
+      })
+      return
+    }
+    c.JSON(500, gin.H{
+      "status":    "Fail",
+      "message": "Lỗi hệ thống",
+    })
+    return
+	}
+	if (class.CourseId == courseID && class.Semester == data.Semester && class.Name == data.Name){
+
+	}else{
+		isDuplicate, err := CheckDuplicateClass(collection, data.Semester, courseID, data.Name, teacherID)
+		if err != nil {	
+			c.JSON(500, gin.H{
+				"status":    "Fail",
+				"message": "Lỗi khi kiểm tra dữ liệu",
+			})
+			return
+		}
+		
+		// Nếu lớp học đã tồn tại, trả về lỗi
+		if isDuplicate {
+			c.JSON(400, gin.H{
+				"status":    "Fail",
+				"message": "Lớp học đã tồn tại",
+			})
+			return
+		}
+	}
 	// Kiểm tra xem lớp học có bị trùng không
-	isDuplicate, err := CheckDuplicateClass(collection, data.Semester, courseID, data.Name, teacherID)
-	if err != nil {	
-		c.JSON(500, gin.H{
-			"status":    "Fail",
-			"message": "Lỗi khi kiểm tra dữ liệu",
-		})
-		return
-	}
-	
-	// Nếu lớp học đã tồn tại, trả về lỗi
-	if isDuplicate {
-		c.JSON(400, gin.H{
-			"status":    "Fail",
-			"message": "Lớp học đã tồn tại",
-		})
-		return
-	}
+
 	
 	// Thêm nếu không bị trùng lặp
 	updatedBy, _ := c.Get("ID")
