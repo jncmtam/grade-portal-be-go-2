@@ -1,4 +1,4 @@
-name: go2
+name: grade-portal-be-go-2
 on:
   push:
     branches: [main]
@@ -31,7 +31,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/arm64   # Xây dựng image cho kiến trúc ARM64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/go2:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/grade-portal-be-go-2:latest
 
       # Bước 5: Kiểm tra kết quả
       - name: Verify
