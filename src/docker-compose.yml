@@ -10,4 +10,4 @@ services:
       - .env
     volumes:
       - .:/app
-    image: ${{ secrets.DOCKERHUB_USERNAME }}}/go2
+    image: ${{ secrets.DOCKERHUB_USERNAME }}}/grade-portal-be-go-2
