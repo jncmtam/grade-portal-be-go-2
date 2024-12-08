@@ -7,48 +7,56 @@ jobs:
   docker:
     runs-on: self-hosted 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+      - name: Build and Push DockerFile
+        run: |
+          echo "${{ secrets.DOCKERHUB_ACCESS_TOKEN }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          cd src/
+          sudo docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/grade-portal-be-go-2 .
+          sudo docker push ${{ secrets.DOCKERHUB_USERNAME }}/grade-portal-be-go-2
+  deploy:
+    needs: docker 
+    runs-on: self-hosted
+    steps:
+      - name: Pull docker image
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/grade-portal-be-go-2:latest
+      - name: Delete old container
+        run: sudo docker rm -f grade-portal-be-go-2
+      - name: Run docker container
+        run: |
+          cd ~
+          sudo docker run -d -p 8080:8080 --name learngo --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/grade-portal-be-go-2
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
         
-      - name: Login Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      # - name: Login Docker Hub
+      #   uses: docker/login-action@v3
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
 
-      # Bước 3: Thiết lập Docker Buildx
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        id: buildx
+      # # Bước 3: Thiết lập Docker Buildx
+      # - name: Setup Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
+      #   id: buildx
 
-      # Bước 4: Build và đẩy Docker image hỗ trợ ARM64
-      - name: Build and push Docker image for ARM64
-        uses: docker/build-push-action@v6
-        id: docker_build
-        with:
-          context: ./src           # Đặt build context là thư mục src
-          file: ./src/Dockerfile   # Đường dẫn đến tệp Dockerfile bên trong thư mục src
-          builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/arm64   # Xây dựng image cho kiến trúc ARM64
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/grade-portal-be-go-2:latest
+      # # Bước 4: Build và đẩy Docker image hỗ trợ ARM64
+      # - name: Build and push Docker image for ARM64
+      #   uses: docker/build-push-action@v6
+      #   id: docker_build
+      #   with:
+      #     context: ./src           # Đặt build context là thư mục src
+      #     file: ./src/Dockerfile   # Đường dẫn đến tệp Dockerfile bên trong thư mục src
+      #     builder: ${{ steps.buildx.outputs.name }}
+      #     platforms: linux/arm64   # Xây dựng image cho kiến trúc ARM64
+      #     push: true
+      #     tags: ${{ secrets.DOCKERHUB_USERNAME }}/grade-portal-be-go-2:latest
 
-      # Bước 5: Kiểm tra kết quả
-      - name: Verify
-        run: echo ${{ steps.docker_build.outputs.digest }}
-
-  # deploy:
-  #   needs: docker
-  #   runs-on: ubuntu-latest 
-  #   steps:
-  #     - name: Pull Docker image
-  #       run: |
-  #         # Kéo image mới nhất từ Docker Hub
-  #         docker pull ${{ secrets.DOCKERHUB_USERNAME }}/go2:latest
-  #     - name: Stop and Remove old container
-  #       run: |
-  #         docker stop go2 || true
-  #         docker rm go2 || true
-  #     - name: Run Docker container
-  #       run: |
-  #         docker run -d -p 8080:8080 --name go2 --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/go2:latest
+      # # Bước 5: Kiểm tra kết quả
+      # - name: Verify
+      #   run: echo ${{ steps.docker_build.outputs.digest }}
