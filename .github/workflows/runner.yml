@@ -28,24 +28,12 @@ jobs:
             context: ./src           # Đặt build context là thư mục src
             file: ./src/Dockerfile   # Đường dẫn đến tệp Dockerfile bên trong thư mục src
             builder: ${{ steps.buildx.outputs.name }}
-            # platforms: linux/arm64   # Xây dựng image cho kiến trúc ARM64
+            platforms: linux/arm64   # Xây dựng image cho kiến trúc ARM64
             push: true
             tags: ${{ secrets.DOCKERHUB_USERNAME }}/grade-portal-be-go-2:latest
         # Bước 5: Kiểm tra kết quả
         - name: Verify
           run: echo ${{ steps.docker_build.outputs.digest }}
-  deploy:
-    needs: docker 
-    runs-on: self-hosted
-    steps:
-      - name: Pull docker image
-        run: docker pull nguyentrongkha2k4/grade-portal-be-go-2:latest
-      - name: Delete old container
-        run: docker rm -f grade-portal-be-go-2
-      - name: Run docker container
-        run: |
-          cd ~
-          docker run -d -p 8080:8080 --name grade-portal-be-go-2 --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/grade-portal-be-go-2
           
      
     
