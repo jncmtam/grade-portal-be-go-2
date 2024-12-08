@@ -24,15 +24,15 @@
 - Tên nhóm :  ≽^• GO GO GO • ྀི≼
 - Danh sách thành viên:
 
-| STT | Họ và Tên           | MSSV    | Vai Trò       | Github                                                   |
-| --- | ------------------- | ------- | ------------- |------------                                              |
-| 1   | Chu Minh Tâm        | 2213009 | Product Owner | [inHansZone](https://github.com/inHansZone)              |
-| 2   | Nguyễn Trọng Kha    | 2211417 | Developer     | [KhaLeopard](https://github.com/Nguyentrongkha2k4)       |
-| 3   | Nguyễn Tiến Phát    | 2212527 | Developer     |[Nguyen Tien Phat](https://github.com/nguyentienphat2904) |
-| 4   | Nguyễn Ngọc Diệu Hà | 2210846 | Developer     |   Không có do bị lỗi                                     |
-| 5   | Lê Hoàng Ngọc Hân   | 2210935 | Developer     | [HANND04](https://github.com/HANND04)                    |
-| 6   | Nguyễn Phúc Hưng    | 2211368 | Developer     |[Richard](https://github.com/Richard1112004)              |
-| 7   | Huỳnh Thanh Tâm     | 2213012 | Developer     | [ImNotTam](https://github.com/ImNotTam)                  |
+| STT | Họ và Tên           | MSSV    | Vai Trò       | Github                                                     |
+| --- | ------------------- | ------- | ------------- |------------                                                |
+| 1   | Chu Minh Tâm        | 2213009 | Product Owner |Không có do bị mất nick github                              |
+| 2   | Nguyễn Trọng Kha    | 2211417 | Developer     |[KhaLeopard](https://github.com/Nguyentrongkha2k4)          |
+| 3   | Nguyễn Tiến Phát    | 2212527 | Developer     |[Nguyen Tien Phat](https://github.com/nguyentienphat2904)   |
+| 4   | Nguyễn Ngọc Diệu Hà | 2210846 | Developer     |[HANND04](https://github.com/HANND04)                       |
+| 5   | Lê Hoàng Ngọc Hân   | 2210935 | Developer     |[inHansZone](https://github.com/inHansZone)                 |
+| 6   | Nguyễn Phúc Hưng    | 2211368 | Developer     |[Richard](https://github.com/Richard1112004)                |
+| 7   | Huỳnh Thanh Tâm     | 2213012 | Developer     |[ImNotTam](https://github.com/ImNotTam)                     |
 
 ## GIỚI THIỆU DỰ ÁN
 ### Bối cảnh 
