@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -35,9 +36,18 @@ func CreateJWT(id bson.ObjectID) string {
 	}
 	return tokenString
 }
-
+// RemoveBearerPrefix để xóa định dạng bearer đầu chuỗi jwt
+func RemoveBearerPrefix(tokenString string) string {
+	// Kiểm tra nếu token bắt đầu bằng "Bearer "
+	if strings.HasPrefix(tokenString, "Bearer ") {
+			// Loại bỏ phần "Bearer " (7 ký tự đầu)
+			return strings.TrimSpace(strings.TrimPrefix(tokenString, "Bearer "))
+	}
+	return tokenString
+}
 // ParseJWT phân tích và xác thực JWT, trả về Claims nếu hợp lệ
 func ParseJWT(tokenString string) (*Claims, error) {
+	tokenString = RemoveBearerPrefix(tokenString)
 	// Phân tích token và kiểm tra tính hợp lệ của nó
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(t *jwt.Token) (interface{}, error) {
 		// Kiểm tra Signature của token

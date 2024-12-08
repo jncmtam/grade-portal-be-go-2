@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -19,16 +20,8 @@ func HandleCreateCourse(c *gin.Context) {
 	// Kiểm tra parse data vào có lỗi không
 	if err := c.BindJSON(&courseData); err != nil {
 		c.JSON(400, gin.H{
-			"code":    "error",
-			"message": "Dữ liệu không hợp lệ",
-		})
-		return
-	}
-
-	if courseData.BT+courseData.TN+courseData.BTL+courseData.GK+courseData.CK != 100 {
-		c.JSON(400, gin.H{
-			"code":    "error",
-			"message": "Sai hệ số, tổng hệ số tối đa là 100",
+			"status":    "Fail",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -39,7 +32,7 @@ func HandleCreateCourse(c *gin.Context) {
 	isDuplicate, err := CheckDuplicateCourse(collection, courseData.Ms, courseData.Name)
 	if err != nil {
 		c.JSON(500, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi khi kiểm tra dữ liệu",
 		})
 		return
@@ -48,8 +41,16 @@ func HandleCreateCourse(c *gin.Context) {
 	// Nếu khóa học đã tồn tại, trả về lỗi
 	if isDuplicate {
 		c.JSON(400, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Khóa học đã tồn tại",
+		})
+		return
+	}
+
+	if courseData.BT+courseData.TN+courseData.BTL+courseData.GK+courseData.CK != 100 {
+		c.JSON(400, gin.H{
+			"status":    "Fail",
+			"message": "Sai hệ số, tổng hệ số tối đa là 100",
 		})
 		return
 	}
@@ -67,7 +68,7 @@ func HandleCreateCourse(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(500, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Lỗi khi tạo khóa học",
 		})
 		return
@@ -75,7 +76,7 @@ func HandleCreateCourse(c *gin.Context) {
 
 	// Trả về kết quả thành công
 	c.JSON(200, gin.H{
-		"code":    "success",
+		"status":    "Success",
 		"message": "Tạo khóa học thành công",
 	})
 }
@@ -85,13 +86,12 @@ func CheckDuplicateCourse(collection *mongo.Collection, ms string, name string) 
 	if ms == "" {
 		return true, errors.New("lỗi ms không có")
 	}
-	filter := bson.M{
-		"ms": ms,
-	}
 
 	// Kiểm tra xem có bản ghi nào không
 	var result bson.M
-	err := collection.FindOne(context.TODO(), filter).Decode(&result)
+	err := collection.FindOne(context.TODO(), bson.M{
+		"ms": ms,
+	}).Decode(&result)
 	if err == mongo.ErrNoDocuments {
 		return false, nil // Không tìm thấy bản ghi
 	} else if err != nil {
@@ -107,8 +107,8 @@ func HandleGetCourseByID(c *gin.Context) {
 	courseID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
 		c.JSON(400, gin.H{
-			"code":    "error",
-			"message": "ID không hợp lệ",
+			"status":    "Fail",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -119,21 +119,21 @@ func HandleGetCourseByID(c *gin.Context) {
 	if err := collection.FindOne(context.TODO(), bson.M{"_id": courseID}).Decode(&course); err != nil {
 		if err == mongo.ErrNoDocuments {
 			c.JSON(404, gin.H{
-				"status":  "error",
-				"message": "Không tìm thấy môn học",
+				"status":    "Fail",
+				"message": "Không tìm thấy khóa học",
 			})
 			return
 		}
-		c.JSON(500, gin.H{
-			"status":  "error",
-			"message": "Lỗi khi lấy môn học",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":    "Fail",
+			"message": "Lỗi khi lấy khóa học",
 		})
 		return
 	}
 	c.JSON(200, gin.H{
-		"status":  "success",
-		"message": "Lấy môn học thành công",
-		"course":  course,
+		"status":  "Success",
+		"message": "Lấy khóa học thành công",
+		"data":  course,
 	})
 }
 
@@ -143,25 +143,25 @@ func HandleGetAllCourses(c *gin.Context) {
 	collection := models.CourseModel()
 	cursor, err := collection.Find(context.TODO(), bson.M{})
 	if err != nil {
-		c.JSON(400, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi lấy dữ liệu",
 		})
 		return
 	}
 	defer cursor.Close(context.TODO())
 	if err := cursor.All(context.TODO(), &allCourses); err != nil {
-		c.JSON(400, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi đọc dữ liệu từ cursor",
 		})
 		return
 	}
 	semester := helper.SetSemester()
 	c.JSON(200, gin.H{
-		"code":       "success",
+		"status":       "Success",
 		"message":    "Lấy ra tất cả khóa học thành công",
-		"allCourses": allCourses,
+		"data": 		allCourses,
 		"semester":   semester,
 	})
 }
@@ -172,21 +172,21 @@ func HandleDeleteCourse(c *gin.Context) {
 	courseID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
 		c.JSON(400, gin.H{
-			"code":    "error",
-			"message": "ID không hợp lệ",
+			"status":    "Fail",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
 	collection := models.CourseModel()
 	if _, err = collection.DeleteOne(context.TODO(), bson.M{"_id": courseID}); err != nil {
-		c.JSON(400, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi xóa khóa học",
 		})
 		return
 	}
-	c.JSON(200, gin.H{
-		"code":    "success",
+	c.JSON(http.StatusOK, gin.H{
+		"status":    "Success",
 		"message": "Xóa khóa học thành công",
 	})
 }
@@ -197,8 +197,8 @@ func HandleUpdateCourse(c *gin.Context) {
 	courseID, err := bson.ObjectIDFromHex(param)
 	if err != nil {
 		c.JSON(400, gin.H{
-			"code":    "error",
-			"message": "ID không hợp lệ",
+			"status":    "error",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -211,8 +211,8 @@ func HandleUpdateCourse(c *gin.Context) {
 	}
 	if err = c.BindJSON(&courseData); err != nil {
 		c.JSON(400, gin.H{
-			"code":    "error",
-			"message": "Dữ liệu không hợp lệ",
+			"status":    "Fail",
+			"message": "Dữ liệu yêu cầu không hợp lệ",
 		})
 		return
 	}
@@ -221,14 +221,14 @@ func HandleUpdateCourse(c *gin.Context) {
 	courseData.UpdatedBy = adminID
 	fmt.Print(courseData)
 	if _, err = collection.UpdateOne(context.TODO(), bson.M{"_id": courseID}, bson.M{"$set": courseData}); err != nil {
-		c.JSON(400, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi cập nhật khóa học",
 		})
 		return
 	}
-	c.JSON(200, gin.H{
-		"code":    "success",
+	c.JSON(http.StatusOK, gin.H{
+		"status":    "Success",
 		"message": "Cập nhật khóa học thành công",
 	})
 }

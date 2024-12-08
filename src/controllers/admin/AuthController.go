@@ -11,6 +11,7 @@ import (
 	"cloud.google.com/go/auth/credentials/idtoken"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // HandleLogin xử lý việc đăng nhập.
@@ -18,19 +19,25 @@ func HandleLogin(c *gin.Context) {
 	var loginData AuthController
 	// Lấy dữ liệu từ front end
 	if err := c.BindJSON(&loginData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Dữ liệu yêu cầu không hợp lệ"})
+		c.JSON(400, gin.H{
+			"status":  "Fail",
+			"message": "Dữ liệu yêu cầu không hợp lệ"})
 		return
 	}
 	payload, err := idtoken.Validate(context.Background(), loginData.IDToken, os.Getenv("YOUR_CLIENT_ID"))
 	if err != nil {
 		fmt.Println("Không có token:", err)
-		c.JSON(401, gin.H{"error": "Token không hợp lệ !"})
+		c.JSON(401, gin.H{
+			"status":  "Fail",
+			"message": "Token không hợp lệ"})
 		return
 	}
 	// Lấy ra email
 	email, emailOk := payload.Claims["email"].(string)
 	if !emailOk {
-		c.JSON(400, gin.H{"error": "Không lấy được thông tin người dùng"})
+		c.JSON(400, gin.H{
+			"status":  "Fail",
+			"message": "Không lấy được thông tin người dùng"})
 		return
 	}
 	// Tìm kiếm người dùng đã có trong database không
@@ -38,13 +45,21 @@ func HandleLogin(c *gin.Context) {
 	var user models.InterfaceAdmin
 	err = collection.FindOne(context.TODO(), bson.M{"email": email}).Decode(&user)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "Không lấy được thông tin người dùng trong dữ liệu."})
+		if err == mongo.ErrNoDocuments{
+			c.JSON(404, gin.H{
+        "status":  "Fail",
+        "message": "Tài khoản không tồn tại"})
+      return
+		}
+		c.JSON(500, gin.H{
+			"status":  "Fail",
+			"mesage": "Lỗi lấy dữ liệu từ server database."})
 		return
 	}
 	token := helper.CreateJWT(user.ID)
 	c.SetCookie("token", token, 3600*24, "/", "", true, true)
 	c.JSON(200, gin.H{
-		"code":  "Success",
+		"status":  "Success",
 		"token": token,
 	})
 }
@@ -52,18 +67,21 @@ func HandleLogin(c *gin.Context) {
 // HandleLogout xử lý việc đăng xuất.
 func HandleLogout(c *gin.Context) {
 	c.SetCookie("token", "", 3600*24, "/", "", true, true)
-	c.JSON(200, gin.H{
-		"code":    "Success",
+	c.JSON(http.StatusOK, gin.H{
+		"status":    "Success",
 		"message": "Đăng xuất thành công",
 	})
 }
 
 // HandleCreateAdmin xử lý việc tạo tài khoản admin mới.
 func HandleCreateAdmin(c *gin.Context) {
+	//Lấy admindata từ mdw
 	adminData, _ := c.Get("adminData")
 	data := adminData.(InterfaceAdminController)
 	collection := models.AdminModel()
+	//Lấy ID người tạo từ mdw
 	createdBy, _ := c.Get("ID")
+	//Check xem admin đó đã tồn tại hay chưa
 	var existingAdmin models.InterfaceAdmin
 	err := collection.FindOne(context.TODO(), bson.M{
 		"$or": bson.A{
@@ -72,37 +90,51 @@ func HandleCreateAdmin(c *gin.Context) {
 		},
 	}).Decode(&existingAdmin)
 	if err == nil {
-		c.JSON(400, gin.H{
-			"code":    "error",
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status":    "Fail",
 			"message": "Bảng ghi của admin này đã được lưu trong database trước đó",
 		})
 		return
 	}
-	collection.InsertOne(context.TODO(), bson.M{
+	//Thêm admin và cơ sở dữ liệu
+	_, err = collection.InsertOne(context.TODO(), bson.M{
 		"email":     data.Email,
 		"name":      data.Name,
 		"faculty":   data.Faculty,
 		"ms":        data.Ms,
 		"createdBy": createdBy,
 	})
-	c.JSON(201, gin.H{
-		"code": "Tạo tài khoản admin thành công !",
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+      "status":  "Fail",
+      "message": "Lỗi khi tạo tài khoản admin.",
+    })
+    return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": "Success",
+		"message": "Tạo tài khoản admin thành công",
 	})
 }
 
 // HandleProfile xử lý việc lấy thông tin tài khoản admin.
 func HandleProfile(c *gin.Context) {
 	ID, _ := c.Get("ID")
+	//Lấy thông tin admin từ cơ sở dữ liệu
 	collection := models.AdminModel()
 	var user models.InterfaceAdmin
 	err := collection.FindOne(context.TODO(), bson.M{"_id": ID}).Decode(&user)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "Không lấy được thông tin người dùng trong dữ liệu."})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": "Fail",
+			"message": "Không lấy được thông tin người dùng trong dữ liệu.",
+		})
 		return
 	}
-	c.JSON(200, gin.H{
-		"code":    "success",
+	//Trả kết quả
+	c.JSON(http.StatusOK, gin.H{
+		"status":    "Success",
 		"message": "Thành công",
-		"user":    user,
+		"data":    user,
 	})
 }

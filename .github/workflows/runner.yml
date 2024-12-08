@@ -34,7 +34,3 @@ jobs:
         # Bước 5: Kiểm tra kết quả
         - name: Verify
           run: echo ${{ steps.docker_build.outputs.digest }}
-          
-     
-    
-

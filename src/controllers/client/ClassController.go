@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // HandleTeacherClasses xử lý việc lấy danh sách lớp học của giáo viên.
@@ -15,7 +16,7 @@ func HandleTeacherClasses(c *gin.Context) {
 	user := data.(models.InterfaceAccount)
 	if user.Role != "teacher" {
 		c.JSON(401, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Chỉ giáo viên mới được phép truy cập",
 		})
 		return
@@ -27,23 +28,30 @@ func HandleTeacherClasses(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.JSON(401, gin.H{
-			"code":    "error",
+		if err == mongo.ErrNoDocuments{
+			c.JSON(404, gin.H{
+        "status":  "Fail",
+        "message": "Giảng viên không quản lý lớp học nào",
+      })
+      return
+		}
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi tìm lớp học",
 		})
 		return
 	}
 	defer cursor.Close(context.TODO())
 	if err := cursor.All(context.TODO(), &classTeacherAll); err != nil {
-		c.JSON(401, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi đọc dữ liệu lớp học",
 		})
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":     "success",
-		"classAll": classTeacherAll,
+		"status":     "Success",
+		"data": classTeacherAll,
 	})
 }
 
@@ -58,23 +66,30 @@ func HandleStudentClasses(c *gin.Context) {
 		"listStudent_ms": user.Ms,
 	})
 	if err != nil {
-		c.JSON(401, gin.H{
-			"code":    "error",
+		if err == mongo.ErrNoDocuments{
+			c.JSON(404, gin.H{
+        "status":  "Fail",
+        "message": "Sinh viên không tham gia lớp học nào",
+      })
+      return
+		}
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi tìm lớp học",
 		})
 		return
 	}
 	defer cursor.Close(context.TODO())
 	if err := cursor.All(context.TODO(), &classStudentAll); err != nil {
-		c.JSON(401, gin.H{
-			"code":    "error",
+		c.JSON(500, gin.H{
+			"status":    "Fail",
 			"message": "Lỗi khi đọc dữ liệu lớp học",
 		})
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":     "success",
-		"classAll": classStudentAll,
+		"status":     "Success",
+		"data": classStudentAll,
 	})
 }
 
@@ -90,7 +105,7 @@ func HandleUserClasses(c *gin.Context) {
 		return
 	}
 	c.JSON(400, gin.H{
-		"code":    "error",
+		"status":    "Fail",
 		"message": "Không tìm thấy người dùng",
 	})
 }
@@ -98,18 +113,32 @@ func HandleUserClasses(c *gin.Context) {
 // HandleClassDetail xử lý việc lấy chi tiết lớp học.
 func HandleClassDetail(c *gin.Context) {
 	paramID := c.Param("id")
-	id, _ := bson.ObjectIDFromHex(paramID)
+	id, err := bson.ObjectIDFromHex(paramID)
+	if err != nil {
+		c.JSON(400, gin.H{
+      "status":  "Fail",
+      "message": "Dữ liệu yêu cầu không hợp lệ",
+    })
+    return
+	}
 	data, _ := c.Get("user")
 	user := data.(models.InterfaceAccount)
 	var classDetail models.InterfaceClass
 	collection := models.ClassModel()
-	err := collection.FindOne(context.TODO(), bson.M{
+	err = collection.FindOne(context.TODO(), bson.M{
 		"_id": id,
 	}).Decode(&classDetail)
 	if err != nil {
-		c.JSON(400, gin.H{
-			"code":    "error",
-			"message": "Không tìm thấy lớp học",
+		if err == mongo.ErrNoDocuments {
+			c.JSON(404, gin.H{
+        "status":  "Fail",
+        "message": "Không tìm thấy lớp học",
+      })
+      return
+		}
+		c.JSON(500, gin.H{
+			"status":    "Fail",
+			"message": "Lỗi khi tìm lớp học",
 		})
 		return
 	}
@@ -118,33 +147,35 @@ func HandleClassDetail(c *gin.Context) {
 		for _, studentMs := range listStudent {
 			if studentMs == user.Ms {
 				c.JSON(200, gin.H{
-					"code":        "success",
-					"classDetail": classDetail,
+					"status":        "Success",
+					"message": "Lấy lớp học thành công",
+					"data": classDetail,
 				})
 				return
 			}
 		}
 		c.JSON(401, gin.H{
-			"code":    "error",
+			"status":    "Fail",
 			"message": "Chỉ sinh viên mới được phép truy cập",
 		})
 		return
 	} else if user.Role == "teacher" {
 		if user.ID != classDetail.TeacherId {
 			c.JSON(401, gin.H{
-				"code":    "error",
+				"status":    "Fail",
 				"message": "Chỉ giáo viên mới được phép truy cập",
 			})
 			return
 		}
 		c.JSON(200, gin.H{
-			"code":        "success",
-			"classDetail": classDetail,
+			"status":        "Success",
+			"message": "Lấy lớp học thành công",
+			"data": classDetail,
 		})
 		return
 	}
 	c.JSON(401, gin.H{
-		"code":    "error",
+		"status":    "Fail",
 		"message": "Chỉ sinh viên và giáo viên mới được phép truy cập",
 	})
 }
@@ -170,7 +201,7 @@ func HandleCountDocuments(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":  "success",
-		"count": count,
+		"status":  "Success",
+		"data": count,
 	})
 }
