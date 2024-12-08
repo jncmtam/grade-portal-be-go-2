@@ -62,8 +62,9 @@ Grade Portal không chỉ là một giải pháp công nghệ mà còn là một
 - `Hall of Fame`
   - Hệ thống tự động cập nhật và hiển thị danh sách top sinh viên có điểm cao nhất theo kỳ, năm học.
 ### API
-- Thông tin chi tiết về API: [API Specification](./docs/api/api_specification.md).
-- Thông tin API định dạng json: [Postman Agent](./docs/api/postman_api_collection.json). 
+- Thông tin chung về API: [API](./docs/api/api_specification.md)
+- Thông tin chi tiết về API: [API Specification](./docs/api/api_specification_detail.md).
+- Thông tin API định dạng json: [Postman Agent](./docs/api/Grade-Portal-Be-Go-2.json). 
 ## Công nghệ sử dụng
 - <a href="https://go.dev/doc/"><img src="https://img.shields.io/badge/Golang-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Golang" /></a> </br>
 - <a href="https://pkg.go.dev/github.com/gin-gonic/gin"><img src="https://img.shields.io/badge/Gin_Framework-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Gin" /> </a></br>
