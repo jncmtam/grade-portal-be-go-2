@@ -2,6 +2,7 @@ package middlewares_admin
 
 import (
 	"Go2/helper"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -38,6 +39,7 @@ func HandleRequireAuth(c *gin.Context) {
 		c.Abort()
 		return
 	}
+    fmt.Println(Claims.ID)
 	c.Set("ID", Claims.ID)
 	c.Next()
 

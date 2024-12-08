@@ -119,7 +119,12 @@ func HandleCreateAdmin(c *gin.Context) {
 
 // HandleProfile xử lý việc lấy thông tin tài khoản admin.
 func HandleProfile(c *gin.Context) {
-	ID, _ := c.Get("ID")
+	ID, exist := c.Get("ID")
+	if !exist {
+		c.JSON(400, gin.H{"status": "Fail",
+								"message": "ID not found in context"})
+    return
+	}
 	//Lấy thông tin admin từ cơ sở dữ liệu
 	collection := models.AdminModel()
 	var user models.InterfaceAdmin
