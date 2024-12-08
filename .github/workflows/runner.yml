@@ -31,6 +31,9 @@ jobs:
             platforms: linux/arm64   # Xây dựng image cho kiến trúc ARM64
             push: true
             tags: ${{ secrets.DOCKERHUB_USERNAME }}/grade-portal-be-go-2:latest
+        # Bước 5: Kiểm tra kết quả
+        - name: Verify
+          run: echo ${{ steps.docker_build.outputs.digest }}
   deploy:
     needs: docker 
     runs-on: self-hosted
@@ -47,6 +50,3 @@ jobs:
      
     
 
-      # # Bước 5: Kiểm tra kết quả
-      # - name: Verify
-      #   run: echo ${{ steps.docker_build.outputs.digest }}
