@@ -1,6 +1,6 @@
 services:
   grade-portal-be-go-2:
-    image: nguyentrongkha2k4/grade-portal-be:latest
+    image: nguyentrongkha2k4/grade-portal-be-go-2:latest
     pull_policy: always   # Luôn pull image mới nhất từ Docker Hub
     ports:
       - "8080:8080"
