@@ -10,5 +10,5 @@ services:
       - .env
     volumes:
       - .:/app
-    image: nguyentrongkha2k4/grade-portal-be-go-2
+    image: nguyentrongkha2k4/grade-portal-be-go-2:latest
 
