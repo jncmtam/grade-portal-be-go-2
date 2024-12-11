@@ -22,7 +22,6 @@
 
 ---
 
-<hr>
 
 # Functional & Non-Functional Requirements
 
