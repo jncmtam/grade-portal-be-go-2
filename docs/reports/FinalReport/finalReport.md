@@ -1,3 +1,29 @@
+<div align="center">
+
+<img src="img/hcmutlogo.png" alt="alt text" width="150"/>
+
+## ĐỒ ÁN TỔNG HỢP: HƯỚNG CÔNG NGHỆ PHẦN MỀM  
+
+# BÁO CÁO ĐỒ ÁN  
+
+## CHỦ ĐỀ: GRADE PORTAL BACKEND GO 2  
+
+| **STT** | **Họ và Tên**          | **MSSV**  | **Vai Trò**            |
+|---------|-------------------------|-----------|------------------------|
+| 1       | Chu Minh Tâm            | 2213009   | Product Owner          |
+| 2       | Nguyễn Trọng Kha        | 2211417   | Developer              |
+| 3       | Nguyễn Tiến Phát        | 2212527   | Developer              |
+| 4       | Nguyễn Ngọc Diệu Hà     | 2210846   | Developer              |
+| 5       | Lê Hoàng Ngọc Hân       | 2210935   | Developer              |
+| 6       | Nguyễn Phúc Hưng        | 2211368   | Developer              |
+| 7       | Huỳnh Thanh Tâm         | 2213012   | Developer              |
+
+</div>
+
+---
+
+<hr>
+
 # Functional & Non-Functional Requirements
 
 ## Functional Requirements
@@ -58,6 +84,8 @@
 - **Compatibility (Tính tương thích)**
   - Đảm bảo tương thích với các framework frontend phổ biến (ReactJS, Angular, v.v.).
   - API hỗ trợ định dạng JSON cho các request và response payload.
+
+---
 
 # Sơ đồ thành phần
 
