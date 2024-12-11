@@ -1,3 +1,64 @@
+# Functional & Non-Functional Requirements
+
+## Functional Requirements
+
+- **Đối với Admin**
+  - Đăng nhập vào/đăng xuất khỏi hệ thống.
+  - Tạo tài khoản admin mới, cấp quyền quản trị cho các tài khoản khác khi cần thiết.
+  - Xem thông tin hồ sơ của mình, bao gồm các thông tin cá nhân và quyền hạn trong hệ thống.
+  - Tạo, cập nhật, xóa và xem thông tin chi tiết của tài khoản giảng viên/sinh viên.
+  - Xem danh sách tài khoản của tất cả giảng viên/sinh viên.
+  - Tạo, cập nhật, xóa, và xem thông tin chi tiết của lớp học/khoá học.
+  - Xem danh sách các khoá học/lớp học của giảng viên giảng dạy/sinh viên theo học.
+  - Thêm sinh viên vào lớp học.
+  - Cập nhật danh sách Hall of Fame cũng như xem danh sách Hall of Fame của các học kì.
+  - Tạo và xem kết quả điểm số của các lớp học.
+
+- **Đối với Giảng viên**
+  - Đăng nhập vào/đăng xuất khỏi hệ thống.
+  - Xem thông tin hồ sơ của mình, bao gồm các thông tin cá nhân và quyền hạn trong hệ thống.
+  - Xem thông tin chi tiết lớp học/khoá học mà giảng viên giảng dạy.
+  - Xem danh sách Hall of Fame của khoá học mà giảng viên giảng dạy của các học kì.
+  - Tạo, cập nhật và xem kết quả điểm số của cả lớp học hoặc một sinh viên cụ thể mà giảng viên giảng dạy.
+
+- **Đối với Sinh viên**
+  - Đăng nhập vào/đăng xuất khỏi hệ thống.
+  - Xem thông tin hồ sơ của mình, bao gồm các thông tin cá nhân và quyền hạn trong hệ thống.
+  - Xem thông tin chi tiết lớp học/khoá học mà sinh viên theo học.
+  - Xem danh sách Hall of Fame các khoá học mà sinh viên theo học của các học kì.
+  - Chỉ được xem kết quả điểm số của chính mình.
+
+## Non-Functional Requirements
+
+- **Performance (Hiệu năng)**
+  - Hệ thống phải phản hồi nhanh chóng trong điều kiện tải thông thường.
+  - Hệ thống phải xử lý được nhiều yêu cầu đồng thời từ người dùng mà không bị suy giảm hiệu năng.
+
+- **Security (Bảo mật)**
+  - Áp dụng xác thực dựa trên token cho tất cả các route được bảo vệ.
+  - Phân quyền rõ ràng: Admin chỉ được truy cập route `/admin`, giảng viên và sinh viên bị giới hạn trong route `/client`.
+  - Sử dụng HTTPS để đảm bảo giao tiếp an toàn.
+
+- **Scalability (Khả năng mở rộng)**
+  - Hệ thống phải hỗ trợ mở rộng theo chiều ngang để xử lý lưu lượng tăng cao.
+  - Cơ sở dữ liệu phải xử lý hiệu quả khi số lượng bản ghi (tài khoản, lớp học, kết quả) tăng lên.
+
+- **Reliability (Độ tin cậy)**
+  - Hệ thống cần đảm bảo 99.9% thời gian hoạt động với cơ chế xử lý lỗi mạnh mẽ.
+  - Dữ liệu phải được được backup và khôi phục nhanh chóng trong trường hợp xảy ra sự cố.
+
+- **Maintainability (Tính dễ bảo trì)**
+  - Cấu trúc module rõ ràng giúp dễ dàng bảo trì và cập nhật.
+  - Tuân thủ tiêu chuẩn coding và tài liệu hóa đầy đủ cho các API.
+
+- **Usability (Tính thân thiện Người dùng)**
+  - Cung cấp thông báo lỗi rõ ràng khi thao tác thất bại (ví dụ: đăng nhập không thành công, truy cập bị từ chối).
+  - Đảm bảo các API RESTful với tên gọi nhất quán để dễ tích hợp.
+
+- **Compatibility (Tính tương thích)**
+  - Đảm bảo tương thích với các framework frontend phổ biến (ReactJS, Angular, v.v.).
+  - API hỗ trợ định dạng JSON cho các request và response payload.
+
 # Sơ đồ thành phần
 
 ![alt text](img/component.png)
