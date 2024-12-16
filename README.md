@@ -22,6 +22,7 @@
 - Giảng viên hướng dẫn: `Lê Đình Thuận`
 - Nhiệm vụ : `grade-portal-be-go-2`
 - Tên nhóm :  ≽^• GO GO GO • ྀི≼
+- Phân công công việc chi tiết tại báo cáo hằng tuần: [tại đây](docs/reports/Weekly)
 - Danh sách thành viên:
 
 | STT | Họ và Tên           | MSSV    | Vai Trò       | Github                                                     |
@@ -61,10 +62,28 @@ Grade Portal không chỉ là một giải pháp công nghệ mà còn là một
   - Tra cứu điểm số các môn học trong từng học kỳ.
 - `Hall of Fame`
   - Hệ thống tự động cập nhật và hiển thị danh sách top sinh viên có điểm cao nhất theo kỳ, năm học.
+### Funtion, non-function cùng các diagram
+Xem chi tiết trong báo cáo tổng hợp: [tại đây](docs/reports/FinalReport/finalReport.md)
 ### API
 - Thông tin chung về API: [API](./docs/api/api_specification.md)
 - Thông tin chi tiết về API: [API Specification](./docs/api/api_specification_detail.md).
-- Thông tin API định dạng json: [Postman Agent](./docs/api/Grade-Portal-Be-Go-2.json). 
+- Thông tin API định dạng json: [Postman Agent](./docs/api/Grade-Portal-Be-Go-2.json).
+### Mô hình hệ thống
+![MVC model](./docs/reports/Weekly/img/MVC.png)
+
+- `Route` :
+  - Định nghĩa các `URL` và liên kết với các `Controller` tương ứng.
+  - `Route` sẽ gọi đến `Controller` khi có một yêu cầu HTTP được gửi đến.
+- `Controller` :
+  - `Controller` xử lý logic của yêu cầu HTTP (GET, POST, PUT, DELETE). Nó nhận dữ liệu từ `Middleware`, tương tác với các `model` và trả lại phản hồi cho `client`.
+  - `Controller` chỉ thực hiện các tác vụ logic như xử lý dữ liệu, gửi phản hồi, hoặc tương tác với cơ sở dữ liệu.
+- `Middleware` :
+  - `Middleware` là các lớp trung gian xử lý yêu cầu trước khi chúng đến `Controller` hoặc sau khi `Controller` xử lý xong. Nó có thể thực hiện các tác vụ như xác thực, logging, hay sửa đổi yêu cầu.
+  - `Middleware` hoạt động như bộ lọc, giúp bảo vệ và kiểm tra các yêu cầu trước khi chúng được định tuyến đến `Controller`.
+- `model` : xử lý logic liên quan đến dữ liệu (`CRUD`- Create - Read - Update - Delete). `Controller` gọi đến `model` để thao tác với `Database`.
+
+- `Response` : sau khi `Controller` nhận data từ `model`, nó sẽ gửi phản hồi (responese) lại cho `client` thông qua các `route` ban đầu.
+  Quá trình này
 ## Công nghệ sử dụng
 - <a href="https://go.dev/doc/"><img src="https://img.shields.io/badge/Golang-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Golang" /></a> </br>
 - <a href="https://pkg.go.dev/github.com/gin-gonic/gin"><img src="https://img.shields.io/badge/Gin_Framework-00ADD8?style=for-the-badge&logo=go&logoColor=white" alt="Gin" /> </a></br>
@@ -76,7 +95,7 @@ Grade Portal không chỉ là một giải pháp công nghệ mà còn là một
 Xem hướng dẫn sử dụng: [tại đây](./docs/Guild/SETUP.md).  
 ## Báo cáo
 - Báo cáo tiến độ làm việc theo tuần: [tại đây](./docs/reports/Weekly).
-- Báo cáo tổng hợp: [tại đây](./docs/reports/FinalReport/link.txt).
+- Báo cáo tổng hợp: [tại đây](./docs/reports/FinalReport/finalReport.md).
 
 ## Liên hệ
 Nếu bạn có bất kỳ thắc mắc, góp ý, hoặc cần báo lỗi liên quan đến ứng dụng, vui lòng liên hệ qua email: trongkha08022k4@gmail.com, hoặc ghé thăm GitHub cá nhân của từng thành viên trong nhóm. Chúng tôi rất mong nhận được phản hồi từ bạn để cải thiện ứng dụng tốt hơn!
